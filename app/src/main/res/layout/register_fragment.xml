@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+
+
+    <TextView
+        android:id="@+id/loginregister_register_or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/margin.16dp"
+        android:layout_marginStart="@dimen/margin.16dp"
+        android:textColor="@color/black"
+        tools:text="nebo přes email" />
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/detail_billing_email_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/loginregister_register_or"
+        android:layout_marginEnd="@dimen/margin.16dp"
+        android:layout_marginStart="@dimen/margin.16dp"
+        android:layout_marginTop="@dimen/margin.16dp"
+        tools:hint="Label">
+
+        <EditText
+            android:id="@+id/loginregister_edt_email"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/editTextSize"
+            android:inputType="textEmailAddress"
+            android:labelFor="@id/detail_billing_email_layout" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/detail_password_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/detail_billing_email_layout"
+        android:layout_marginEnd="@dimen/margin.16dp"
+        android:layout_marginStart="@dimen/margin.16dp"
+        android:layout_marginTop="@dimen/margin.16dp">
+
+        <EditText
+            android:id="@+id/loginregister_edt_password"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/editTextSize"
+            android:ems="10"
+            android:inputType="textPassword"
+            android:labelFor="@id/detail_password_layout" />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/detail_password_again_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/detail_password_layout"
+        android:layout_marginEnd="@dimen/margin.16dp"
+        android:layout_marginStart="@dimen/margin.16dp"
+        android:layout_marginTop="@dimen/margin.16dp">
+
+        <EditText
+            android:id="@+id/loginregister_edt_password_second"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/editTextSize"
+            android:inputType="textPassword"
+            android:labelFor="@id/detail_password_layout" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <RelativeLayout
+        android:id="@+id/loginregister_registration_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/detail_password_again_layout"
+        android:layout_marginTop="@dimen/margin.16dp">
+
+        <TextView
+            android:id="@+id/loginregister_textview_podminky"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/black"
+            tools:text="obchodní podmínky" />
+
+        <Button
+            android:id="@+id/registration_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loginregister_textview_podminky"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/margin.16dp"
+            tools:text="registrovat se" />
+
+        <TextView
+            android:id="@+id/loginregister_dif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/registration_btn"
+            android:layout_centerHorizontal="true"
+            android:textColor="@color/black"
+            tools:text="nebo" />
+
+        <Button
+            android:id="@+id/loginregister_btn_log_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/loginregister_dif"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="@dimen/margin.16dp"
+            android:textColor="@color/black"
+            tools:text="přihlásit se" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent">
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/login_email_address_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin.16dp"
+        android:layout_marginStart="@dimen/margin.16dp"
+        android:layout_marginTop="@dimen/margin.16dp">
+
+        <EditText
+            android:id="@+id/loginregister_login_edt_email"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/editTextSize"
+            android:inputType="textEmailAddress"
+            tools:labelFor="@id/login_email_address_layout" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/login_password_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_email_address_layout"
+        android:layout_marginEnd="@dimen/margin.16dp"
+        android:layout_marginStart="@dimen/margin.16dp"
+        android:layout_marginTop="@dimen/margin.16dp">
+
+        <EditText
+            android:id="@+id/loginregister_login_edt_password"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/editTextSize"
+            android:inputType="textPassword"
+            tools:labelFor="@id/login_password_layout" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/loginregister_login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_password_layout"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin.16dp"
+        tools:text="přihlásit se" />
+
+</RelativeLayout>

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "151089744573",
+    "firebase_url": "https://fluffy-fox-project.firebaseio.com",
+    "project_id": "fluffy-fox-project",
+    "storage_bucket": "fluffy-fox-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151089744573:android:e4100bc9975c02eb",
+        "android_client_info": {
+          "package_name": "com.companybest.ondra.engineerclickernew"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "151089744573-m3kt2b6nn5u0is0i8a05cl5iunhqq6cc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYOTbTE9llAsM_BuOAdr20jorYoEP5z8Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

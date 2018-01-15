@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/EngineerClickerNew.iml" filepath="$PROJECT_DIR$/EngineerClickerNew.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../AdronEngine/adron/adron.iml" filepath="$PROJECT_DIR$/../AdronEngine/adron/adron.iml" />
+      <module fileurl="file://G:\programing\android\project\games with my engine\AdronEngineNew\adron\adron.iml" filepath="G:\programing\android\project\games with my engine\AdronEngineNew\adron\adron.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+    </modules>
+  </component>
+</project>

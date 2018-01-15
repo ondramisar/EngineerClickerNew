@@ -1,0 +1,3 @@
+include ':app'
+include ':adron'
+project(':adron').projectDir = new File(settingsDir, '../AdronEngine/adron')
