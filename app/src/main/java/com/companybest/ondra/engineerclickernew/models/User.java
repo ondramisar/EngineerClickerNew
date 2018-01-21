@@ -13,6 +13,7 @@ public class User extends RealmObject {
     private String name;
     private String email;
     private int coins;
+    private Long lastUpdateMaterial;
     private RealmList<Machine> machines;
     private RealmList<Material> mMaterials;
 
@@ -51,6 +52,14 @@ public class User extends RealmObject {
 
     public void setCoins(int coins) {
         this.coins = coins;
+    }
+
+    public Long getLastUpdateMaterial() {
+        return lastUpdateMaterial;
+    }
+
+    public void setLastUpdateMaterial(Long lastUpdateMaterial) {
+        this.lastUpdateMaterial = lastUpdateMaterial;
     }
 
     public RealmList<Machine> getMachines() {

@@ -10,4 +10,5 @@ open class Machine : RealmObject() {
     var timeBeffore: Long = 0
     var timeToReach: Int = 0
     var idMaterialToGive: String = ""
+    var lvl: Int = 0
 }

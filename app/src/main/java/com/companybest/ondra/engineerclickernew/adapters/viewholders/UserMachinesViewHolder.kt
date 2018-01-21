@@ -11,5 +11,8 @@ class UserMachinesViewHolder(itemView: View) : GenericViewHolder(itemView) {
     override fun onBindViewHolder(position: Int, data: RealmModel?) {
         val mach = data as Machine
         itemView.user_machine_name.text = mach.name
+        itemView.user_machine_lvl.text = mach.lvl.toString()
+        itemView.user_machine_time.text = mach.timeToReach.toString()
+
     }
 }

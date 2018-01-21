@@ -4,20 +4,15 @@ import android.graphics.PixelFormat
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.util.Log
 import com.companybest.ondra.adron.BaseClasses.BasicAdrClass
 import com.companybest.ondra.adron.Engine.Engine
 import com.companybest.ondra.adron.Entity.Scene
 import com.companybest.ondra.adron.OpenGl.TextureLibrary
 import com.companybest.ondra.adron.Rendering.AdrGlSurfaceView
 import com.companybest.ondra.engineerclickernew.R
-import com.companybest.ondra.engineerclickernew.fragments.ShopFragment
 import com.companybest.ondra.engineerclickernew.fragments.MachineFragment
-import com.companybest.ondra.engineerclickernew.models.Machine
-import com.companybest.ondra.engineerclickernew.models.User
-import com.google.firebase.auth.FirebaseAuth
-import io.realm.Realm
-import io.realm.RealmList
+import com.companybest.ondra.engineerclickernew.fragments.ShopFragment
+import com.companybest.ondra.engineerclickernew.networkAndLoading.NetworkClient
 import kotlinx.android.synthetic.main.activity_main_container.*
 import javax.microedition.khronos.opengles.GL10
 
@@ -63,12 +58,14 @@ class MainContainerActivity : BasicAdrClass() {
     }
 
     override fun update(dt: Float) {
-        Realm.getDefaultInstance().use { realm ->
+        val net = NetworkClient()
+        net.updateMachineWork()
+      /*  Realm.getDefaultInstance().use { realm ->
             val mAuth = FirebaseAuth.getInstance()
             val userFire = mAuth.currentUser
             val user = realm.where(User::class.java).equalTo("idUser", userFire?.uid).findFirst()
             val machines: RealmList<Machine>? = user?.machines
-            Log.i("usern", machines?.size.toString())
+           // Log.i("usern", machines?.size.toString())
             if (machines != null) {
                 for (machine in machines) {
                     if (machine?.timeBeffore == 0L) {
@@ -83,16 +80,16 @@ class MainContainerActivity : BasicAdrClass() {
                                 user.materials.forEach({
                                     if (it.id == machine.idMaterialToGive) {
                                         it.numberOf += 1
-                                        Log.i("usern", it.numberOf.toString())
+                                      //  Log.i("usern", it.numberOf.toString())
                                     }
                                 })
                             })
-                            Log.i("usern", "hey we in ${machine.name}")
+                        //    Log.i("usern", "hey we in ${machine.name}")
                         }
                     }
                 }
             }
-        }
+        }*/
     }
 
     fun startFragmentTransaction(fragment: Fragment) {

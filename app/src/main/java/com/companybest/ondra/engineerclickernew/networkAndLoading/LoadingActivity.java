@@ -4,41 +4,57 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.companybest.ondra.engineerclickernew.mainContainer.MainContainerActivity;
 import com.companybest.ondra.engineerclickernew.R;
+import com.companybest.ondra.engineerclickernew.mainContainer.MainContainerActivity;
 import com.companybest.ondra.engineerclickernew.utilities.CallBackFirebase;
-import com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt;
+
+import java.util.ArrayList;
 
 public class LoadingActivity extends AppCompatActivity {
-
-
-    private int goToUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
 
-        goToUser = 0;
+        final ArrayList<String> keys = new ArrayList<>();
+        final ArrayList<String> components = new ArrayList<>();
+
         final NetworkClient networkClient = new NetworkClient();
-        networkClient.mCallBack.put(QueryFirebaseUtilitiesKt.getDefaultParsingCalbacks(), new CallBackFirebase() {
+        networkClient.mCallBack.put(NetworkClient.COMPONENTS, new CallBackFirebase() {
             @Override
             public void onSucsses() {
-                goToUser += 1;
-                if (goToUser == 2)
-                    networkClient.parseUser();
+
             }
-        });
-        networkClient.mCallBack.put(QueryFirebaseUtilitiesKt.getUsersPath(), new CallBackFirebase() {
+
             @Override
-            public void onSucsses() {
-                Intent i = new Intent(getApplicationContext(), MainContainerActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                getApplicationContext().startActivity(i);
+            public void addOnSucsses(String key) {
+                keys.add(key);
+
+                if (keys.size() == 3) {
+                    networkClient.compose();
+                }
             }
         });
 
-        networkClient.parseDefaultMachines();
-        networkClient.parseMaterials();
+        networkClient.mCallBack.put(NetworkClient.COMPOSERS, new CallBackFirebase() {
+            @Override
+            public void onSucsses() {
+
+            }
+
+            @Override
+            public void addOnSucsses(String key) {
+                components.add(key);
+
+                if (components.size() == 2) {
+                    Intent i = new Intent(getApplicationContext(), MainContainerActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(i);
+                }
+            }
+        });
+        networkClient.parseAllComponents();
+
     }
 }
