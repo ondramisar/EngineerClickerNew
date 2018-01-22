@@ -8,6 +8,7 @@ import com.companybest.ondra.engineerclickernew.models.DefaultMachine;
 import com.companybest.ondra.engineerclickernew.models.Machine;
 import com.companybest.ondra.engineerclickernew.models.Material;
 import com.companybest.ondra.engineerclickernew.models.User;
+import com.companybest.ondra.engineerclickernew.models.Worker;
 import com.companybest.ondra.engineerclickernew.utilities.CallBackFirebase;
 import com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,14 +28,17 @@ import io.realm.Realm;
 import io.realm.RealmList;
 
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getBaseRef;
+import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getFirebaseUser;
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getMaterialPath;
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getUserDocumentReferenc;
 
 public class NetworkClient {
 
-    public static String MACHINE = "MACHINE";
+    public static String DEFAULT_MACHINE = "DEFAULT_MACHINE";
+    public static String USERS_MACHINE = "USERS_MACHINE";
     public static String MATERIAL = "MATERIAL";
     public static String USER = "USER";
+    public static String WORKERS = "WORKERS";
 
     public static String COMPONENTS = "COMPONENTS";
     public static String COMPOSERS = "COMPOSERS";
@@ -56,41 +60,43 @@ public class NetworkClient {
                     RealmList<Machine> machines = user.getMachines();
                     if (machines != null) {
                         for (final Machine machine : machines) {
-                            if (machine.getTimeBeffore() == 0L) {
-                                realm.executeTransaction(new Realm.Transaction() {
-                                    @Override
-                                    public void execute(Realm realm) {
-                                        machine.setTimeBeffore(System.currentTimeMillis() / 1000);
-                                    }
-                                });
-                            } else {
-                                Long cur = System.currentTimeMillis() / 1000;
-                                if ((cur - machine.getTimeBeffore()) > machine.getTimeToReach()) {
+                            if (machine.getWorker() != null) {
+                                if (machine.getTimeBeffore() == 0L) {
                                     realm.executeTransaction(new Realm.Transaction() {
                                         @Override
                                         public void execute(Realm realm) {
                                             machine.setTimeBeffore(System.currentTimeMillis() / 1000);
-                                            Material mat = realm.where(Material.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
-                                            if (!user.getMaterials().contains(mat)) {
-                                                mat.setNumberOf(1);
-                                                user.addMaterial(mat);
-                                                getUserDocumentReferenc()
-                                                        .collection(getMaterialPath())
-                                                        .document(mat.getId())
-                                                        .update("numberOf", mat.getNumberOf());
-                                            } else {
-                                                for (Material material : user.getMaterials()) {
-                                                    if (material.getId().equals(machine.getIdMaterialToGive())) {
-                                                        material.setNumberOf(material.getNumberOf() + 1);
-                                                        getUserDocumentReferenc()
-                                                                .collection(getMaterialPath())
-                                                                .document(material.getId())
-                                                                .update("numberOf", material.getNumberOf());
+                                        }
+                                    });
+                                } else {
+                                    Long cur = System.currentTimeMillis() / 1000;
+                                    if ((cur - machine.getTimeBeffore()) > machine.getTimeToReach()) {
+                                        realm.executeTransaction(new Realm.Transaction() {
+                                            @Override
+                                            public void execute(Realm realm) {
+                                                machine.setTimeBeffore(System.currentTimeMillis() / 1000);
+                                                Material mat = realm.where(Material.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
+                                                if (!user.getMaterials().contains(mat)) {
+                                                    mat.setNumberOf(1);
+                                                    user.addMaterial(mat);
+                                                    getUserDocumentReferenc()
+                                                            .collection(getMaterialPath())
+                                                            .document(mat.getId())
+                                                            .update("numberOf", mat.getNumberOf());
+                                                } else {
+                                                    for (Material material : user.getMaterials()) {
+                                                        if (material.getId().equals(machine.getIdMaterialToGive())) {
+                                                            material.setNumberOf(material.getNumberOf() + 1);
+                                                            getUserDocumentReferenc()
+                                                                    .collection(getMaterialPath())
+                                                                    .document(material.getId())
+                                                                    .update("numberOf", material.getNumberOf());
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                    });
+                                        });
+                                    }
                                 }
                             }
                         }
@@ -185,7 +191,7 @@ public class NetworkClient {
             }
 
             getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath()).document(mach.getId())
-                    .set(new PostMachine(mach.getName(), mach.getTimeToReach(), mach.getIdMaterialToGive()));
+                    .set(new PostMachine(mach.getName(), mach.getTimeToReach(), mach.getIdMaterialToGive(), user.getIdUser(), mach.getLvl()));
 
             getUserDocumentReferenc()
                     .get()
@@ -216,6 +222,8 @@ public class NetworkClient {
         parseDefaultMachines();
         parseMaterials();
         parseUser();
+        parseWorkers();
+        parseUsersMachines();
     }
 
     public void compose() {
@@ -243,7 +251,34 @@ public class NetworkClient {
                                 }
                                 mRealm.commitTransaction();
                             }
-                            mCallBack.get(COMPONENTS).addOnSucsses(MACHINE);
+                            mCallBack.get(COMPONENTS).addOnSucsses(DEFAULT_MACHINE);
+                        }
+                    }
+                });
+    }
+
+    public void parseUsersMachines() {
+        QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
+                .whereEqualTo("userId", getFirebaseUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            try (Realm mRealm = Realm.getDefaultInstance()) {
+                                mRealm.beginTransaction();
+                                for (DocumentSnapshot single : task.getResult()) {
+                                    Machine m = new Machine();
+                                    m.setId(single.getId());
+                                    m.setName((java.lang.String) single.get("name"));
+                                    m.setTimeToReach(single.getLong("timeToReach").intValue());
+                                    m.setIdMaterialToGive(single.getString("idMaterialToGive"));
+
+                                    mRealm.copyToRealmOrUpdate(m);
+                                }
+                                mRealm.commitTransaction();
+                            }
+                            mCallBack.get(COMPONENTS).addOnSucsses(USERS_MACHINE);
                         }
                     }
                 });
@@ -268,6 +303,30 @@ public class NetworkClient {
                                 mRealm.commitTransaction();
                             }
                             mCallBack.get(COMPONENTS).addOnSucsses(MATERIAL);
+                        }
+                    }
+                });
+    }
+
+    public void parseWorkers() {
+        QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getWorkersPath())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            try (Realm mRealm = Realm.getDefaultInstance()) {
+                                mRealm.beginTransaction();
+                                for (DocumentSnapshot single : task.getResult()) {
+                                    Worker worker = new Worker();
+                                    worker.setId(single.getId());
+                                    worker.setName(single.getString("name"));
+
+                                    mRealm.copyToRealmOrUpdate(worker);
+                                }
+                                mRealm.commitTransaction();
+                            }
+                            mCallBack.get(COMPONENTS).addOnSucsses(WORKERS);
                         }
                     }
                 });
@@ -340,7 +399,7 @@ public class NetworkClient {
                                             }
                                         }
 
-                                        mCallBack.get(COMPOSERS).addOnSucsses(MACHINE);
+                                        mCallBack.get(COMPOSERS).addOnSucsses(DEFAULT_MACHINE);
                                     }
                                 });
                             }

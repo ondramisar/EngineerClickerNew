@@ -31,7 +31,7 @@ public class LoadingActivity extends AppCompatActivity {
             public void addOnSucsses(String key) {
                 keys.add(key);
 
-                if (keys.size() == 3) {
+                if (keys.size() == 5) {
                     networkClient.compose();
                 }
             }

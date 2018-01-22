@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.companybest.ondra.engineerclickernew.R
-import com.companybest.ondra.engineerclickernew.adapters.UserMachinesAdapter
+import com.companybest.ondra.engineerclickernew.adapters.BasicAdapterForAll
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine
 import com.companybest.ondra.engineerclickernew.models.User
 import com.google.firebase.auth.FirebaseAuth
@@ -54,7 +54,7 @@ class MachineFragment : Fragment() {
             dataRealm.addAll(defaultMachine)
         }
 
-        val adapter = UserMachinesAdapter(dataRealm)
+        val adapter = BasicAdapterForAll(dataRealm)
         val linearManaget = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         view.user_machines_recyclerview.adapter = adapter
         view.user_machines_recyclerview.layoutManager = linearManaget

@@ -3,19 +3,22 @@ package com.companybest.ondra.engineerclickernew.adapters
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.companybest.ondra.engineerclickernew.adapters.viewholders.DefaultMachineViewHolder
-import com.companybest.ondra.engineerclickernew.adapters.viewholders.generic.GenericViewHolder
 import com.companybest.ondra.engineerclickernew.R
+import com.companybest.ondra.engineerclickernew.adapters.viewholders.DefaultMachineViewHolder
 import com.companybest.ondra.engineerclickernew.adapters.viewholders.UserMachinesViewHolder
+import com.companybest.ondra.engineerclickernew.adapters.viewholders.WorkersViewHolder
+import com.companybest.ondra.engineerclickernew.adapters.viewholders.generic.GenericViewHolder
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine
 import com.companybest.ondra.engineerclickernew.models.Machine
+import com.companybest.ondra.engineerclickernew.models.Worker
 import io.realm.RealmList
 import io.realm.RealmModel
 
 
-class UserMachinesAdapter(data: RealmList<RealmModel>) : RecyclerView.Adapter<GenericViewHolder>() {
-    val MACHINE_TYPE = 0
-    val DEFAULT_MACHINE_TYPE = 1
+class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<GenericViewHolder>() {
+    private val MACHINE_TYPE = 0
+    private val DEFAULT_MACHINE_TYPE = 1
+    private val WORKERS_TYPE = 2
 
     var mData: RealmList<RealmModel>? = null
 
@@ -29,6 +32,7 @@ class UserMachinesAdapter(data: RealmList<RealmModel>) : RecyclerView.Adapter<Ge
         when (viewType) {
             MACHINE_TYPE -> viewholder = UserMachinesViewHolder(inflater.inflate(R.layout.user_machine_item, parent, false))
             DEFAULT_MACHINE_TYPE -> viewholder = DefaultMachineViewHolder(inflater.inflate(R.layout.user_machine_item, parent, false))
+            WORKERS_TYPE -> viewholder = WorkersViewHolder(inflater.inflate(R.layout.worker_item, parent, false))
         }
         return viewholder!!
     }
@@ -42,6 +46,8 @@ class UserMachinesAdapter(data: RealmList<RealmModel>) : RecyclerView.Adapter<Ge
             return MACHINE_TYPE
         } else if (mData?.get(position) is DefaultMachine) {
             return DEFAULT_MACHINE_TYPE
+        } else if (mData?.get(position) is Worker){
+            return WORKERS_TYPE
         }
         return 0
     }

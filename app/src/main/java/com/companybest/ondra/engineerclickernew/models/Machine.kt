@@ -11,4 +11,5 @@ open class Machine : RealmObject() {
     var timeToReach: Int = 0
     var idMaterialToGive: String = ""
     var lvl: Int = 0
+    var worker:Worker? = null
 }

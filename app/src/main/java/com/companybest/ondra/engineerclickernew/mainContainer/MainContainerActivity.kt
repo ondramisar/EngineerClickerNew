@@ -60,41 +60,29 @@ class MainContainerActivity : BasicAdrClass() {
     override fun update(dt: Float) {
         val net = NetworkClient()
         net.updateMachineWork()
-      /*  Realm.getDefaultInstance().use { realm ->
-            val mAuth = FirebaseAuth.getInstance()
-            val userFire = mAuth.currentUser
-            val user = realm.where(User::class.java).equalTo("idUser", userFire?.uid).findFirst()
-            val machines: RealmList<Machine>? = user?.machines
-           // Log.i("usern", machines?.size.toString())
-            if (machines != null) {
-                for (machine in machines) {
-                    if (machine?.timeBeffore == 0L) {
-                        realm.executeTransaction(Realm.Transaction {
-                            machine.timeBeffore = System.currentTimeMillis() / 1000
-                        })
-                    } else {
-                        val cur = System.currentTimeMillis() / 1000
-                        if (cur - (machine?.timeBeffore ?: 0) > machine?.timeToReach ?: 0) {
-                            realm.executeTransaction(Realm.Transaction {
-                                machine?.timeBeffore = System.currentTimeMillis() / 1000
-                                user.materials.forEach({
-                                    if (it.id == machine.idMaterialToGive) {
-                                        it.numberOf += 1
-                                      //  Log.i("usern", it.numberOf.toString())
-                                    }
-                                })
-                            })
-                        //    Log.i("usern", "hey we in ${machine.name}")
-                        }
-                    }
-                }
-            }
-        }*/
     }
 
     fun startFragmentTransaction(fragment: Fragment) {
         supportFragmentManager.beginTransaction()
                 .replace(R.id.container_main, fragment)
                 .commit()
+
+    }
+
+    fun startFragmentTransactionWithBackStack(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+                .replace(R.id.container_main, fragment)
+                .addToBackStack(null)
+                .commit()
+
+    }
+
+    override fun onBackPressed() {
+        if(fragmentManager.backStackEntryCount == 0) {
+            super.onBackPressed()
+        }
+        else {
+            fragmentManager.popBackStack()
+        }
     }
 }

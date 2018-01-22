@@ -30,7 +30,12 @@ class ShopFragment: Fragment() {
 
         view.shop_machines_default_buy.setOnClickListener({
             val ac = activity as MainContainerActivity
-            ac.startFragmentTransaction(MachineFragment.newInstance(MachineFragment.defaultMachineType))
+            ac.startFragmentTransactionWithBackStack(MachineFragment.newInstance(MachineFragment.defaultMachineType))
+        })
+
+        view.shop_workers_buy.setOnClickListener({
+            val ac = activity as MainContainerActivity
+            ac.startFragmentTransactionWithBackStack(WorkersBuyFragment.newInstance())
         })
 
         return view

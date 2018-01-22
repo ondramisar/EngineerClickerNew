@@ -22,24 +22,12 @@ fun getFirebaseAuth(): FirebaseAuth {
     return FirebaseAuth.getInstance()
 }
 
-fun getMachineCalbacks(): String {
-    return "MachineCallBack"
-}
-
-fun getMaterialsCalbacks(): String {
-    return "MaterialCallBack"
-}
-
-fun getUserCalbacks(): String {
-    return "UserCallBack"
-}
-
-fun getUserMaterialMachineParsingCallbacks(): String {
-    return "CallBack"
-}
-
 fun getDefaultMachinePath(): String {
     return "DefaultMachines"
+}
+
+fun getWorkersPath(): String {
+    return "Workers"
 }
 
 fun getUsersMachinePath(): String {
