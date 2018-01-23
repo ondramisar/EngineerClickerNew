@@ -2,6 +2,7 @@ package com.companybest.ondra.engineerclickernew.networkAndLoading;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMachine;
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine;
@@ -19,6 +20,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUt
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getMaterialPath;
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getUserDocumentReferenc;
 
+//TODO add WriteBatch from firebase
 public class NetworkClient {
 
     public static String DEFAULT_MACHINE = "DEFAULT_MACHINE";
@@ -76,23 +79,35 @@ public class NetworkClient {
                                             public void execute(Realm realm) {
                                                 machine.setTimeBeffore(System.currentTimeMillis() / 1000);
                                                 Material mat = realm.where(Material.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
-                                                if (!user.getMaterials().contains(mat)) {
-                                                    mat.setNumberOf(1);
-                                                    user.addMaterial(mat);
-                                                    getUserDocumentReferenc()
+
+                                                if (mat != null) {
+                                                    WriteBatch batch = getBaseRef().batch();
+                                                    DocumentReference sfRef = getUserDocumentReferenc()
                                                             .collection(getMaterialPath())
-                                                            .document(mat.getId())
-                                                            .update("numberOf", mat.getNumberOf());
-                                                } else {
-                                                    for (Material material : user.getMaterials()) {
-                                                        if (material.getId().equals(machine.getIdMaterialToGive())) {
+                                                            .document(mat.getId());
+
+                                                    if (!user.getMaterials().contains(mat)) {
+                                                        mat.setNumberOf(1);
+                                                        user.addMaterial(mat);
+
+                                                        batch.update(sfRef, "numberOf", mat.getNumberOf());
+
+
+                                                    } else {
+                                                        Material material = user.getMaterials().where().equalTo("id", machine.getIdMaterialToGive()).findFirst();
+                                                        if (material != null) {
                                                             material.setNumberOf(material.getNumberOf() + 1);
-                                                            getUserDocumentReferenc()
-                                                                    .collection(getMaterialPath())
-                                                                    .document(material.getId())
-                                                                    .update("numberOf", material.getNumberOf());
+
+                                                            batch.update(sfRef, "numberOf", material.getNumberOf());
+
                                                         }
                                                     }
+                                                    batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            Log.i("usern", "Updated");
+                                                        }
+                                                    });
                                                 }
                                             }
                                         });
@@ -101,67 +116,6 @@ public class NetworkClient {
                             }
                         }
                     }
-                    if (user.getLastUpdateMaterial() == null || user.getLastUpdateMaterial() == 0L) {
-                        realm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                user.setLastUpdateMaterial(System.currentTimeMillis() / 1000);
-                            }
-                        });
-                    }
-
-                 /*   Long cur = System.currentTimeMillis() / 1000;
-                    if ((cur - user.getLastUpdateMaterial()) > 45) {
-                        for (Material m : user.getMaterials()) {
-                            getUserDocumentReferenc()
-                                    .collection(getMaterialPath())
-                                    .document(m.getId())
-                                    .update("numberOf", m.getNumberOf());
-                        }
-                        realm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                user.setLastUpdateMaterial(System.currentTimeMillis() / 1000);
-                            }
-                        });*/
-                     /*   getUserDocumentReferenc()
-                                .collection(getMaterialPath())
-                                .get()
-                                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot documentSnapshots) {
-                                        try (Realm realm = Realm.getDefaultInstance()) {
-
-                                            for (DocumentSnapshot document : documentSnapshots.getDocuments()) {
-                                                if (document != null) {
-
-                                                    FirebaseUser userFire = getFirebaseUser();
-                                                    if (userFire != null) {
-
-                                                        final User user = realm.where(User.class).equalTo("idUser", userFire.getUid()).findFirst();
-                                                        if (user != null) {
-                                                            realm.executeTransaction(new Realm.Transaction() {
-                                                                @Override
-                                                                public void execute(Realm realm) {
-                                                                    user.setLastUpdateMaterial(System.currentTimeMillis() / 1000);
-                                                                }
-                                                            });
-
-                                                            Material material = user.getMaterials().where().equalTo("id", document.getId()).findFirst();
-                                                            getUserDocumentReferenc()
-                                                                    .collection(getMaterialPath())
-                                                                    .document(material.getId())
-                                                                    .update("numberOf", material.getNumberOf());
-                                                        }
-                                                    }
-                                                }
-                                            }
-
-                                        }
-
-                                    }
-                                });*/
-
                 }
             }
         }
@@ -190,8 +144,17 @@ public class NetworkClient {
 
             }
 
-            getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath()).document(mach.getId())
-                    .set(new PostMachine(mach.getName(), mach.getTimeToReach(), mach.getIdMaterialToGive(), user.getIdUser(), mach.getLvl()));
+            WriteBatch batch = getBaseRef().batch();
+            DocumentReference sfRef = getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath()).document(mach.getId());
+            batch.set(sfRef, new PostMachine(mach.getName(), mach.getTimeToReach(), mach.getIdMaterialToGive(), user.getIdUser(), mach.getLvl()));
+            batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Log.i("usern", "Updated");
+                }
+            });
+          /*  getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath()).document(mach.getId())
+                    .set(new PostMachine(mach.getName(), mach.getTimeToReach(), mach.getIdMaterialToGive(), user.getIdUser(), mach.getLvl()));*/
 
             getUserDocumentReferenc()
                     .get()

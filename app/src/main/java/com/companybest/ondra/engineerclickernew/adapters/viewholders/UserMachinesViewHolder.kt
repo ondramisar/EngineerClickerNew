@@ -17,7 +17,7 @@ class UserMachinesViewHolder(itemView: View) : GenericViewHolder(itemView) {
         itemView.user_machine_time.text = mach.timeToReach.toString()
         itemView.setOnClickListener({
             val activity = itemView.context as MainContainerActivity
-            activity.startFragmentTransactionWithBackStack(UserMachineDetailFragment.newInstance())
+            activity.startFragmentTransactionWithBackStack(UserMachineDetailFragment.newInstance(mach.id))
 
         })
 

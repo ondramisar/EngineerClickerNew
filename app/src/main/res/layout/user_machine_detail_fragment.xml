@@ -1,6 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/user_machine_detail_lvl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textSize="16sp"
+        tools:text="LVL 1" />
+
+    <TextView
+        android:id="@+id/user_machine_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="11dp"
+        android:textSize="16sp"
+        tools:text="dddddddddddddddd" />
+
+    <TextView
+        android:id="@+id/user_machine_detail_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:textSize="16sp"
+        tools:text="STATS" />
+
+    <TextView
+        android:id="@+id/user_machine_detail_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/user_machine_stats"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="12sp"
+        tools:text="TIME: 100000" />
+
+    <TextView
+        android:id="@+id/user_machine_detail_materials"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/user_machine_time"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="12sp"
+        tools:text="MATERIALS: 100" />
+
+    <ImageView
+        android:id="@+id/user_machine_img"
+        android:layout_width="180dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/user_machine_name"
+        android:layout_margin="10dp"
+        android:background="#dddd" />
+
+    <ImageView
+        android:id="@+id/user_machine_worker_img"
+        android:layout_width="80dp"
+        android:layout_height="100dp"
+        android:layout_below="@+id/user_machine_name"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@id/user_machine_img"
+        android:background="#dddd" />
+</RelativeLayout>
