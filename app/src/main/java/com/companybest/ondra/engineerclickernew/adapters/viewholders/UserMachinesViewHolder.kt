@@ -1,5 +1,6 @@
 package com.companybest.ondra.engineerclickernew.adapters.viewholders
 
+import android.graphics.Color
 import android.view.View
 import com.companybest.ondra.engineerclickernew.adapters.viewholders.generic.GenericViewHolder
 import com.companybest.ondra.engineerclickernew.fragments.UserMachineDetailFragment
@@ -20,6 +21,8 @@ class UserMachinesViewHolder(itemView: View) : GenericViewHolder(itemView) {
             activity.startFragmentTransactionWithBackStack(UserMachineDetailFragment.newInstance(mach.id))
 
         })
+        if (mach.worker != null)
+            itemView.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
 
     }
 }

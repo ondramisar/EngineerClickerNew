@@ -47,7 +47,7 @@ public class LoadingActivity extends AppCompatActivity {
             public void addOnSucsses(String key) {
                 components.add(key);
 
-                if (components.size() == 2) {
+                if (components.size() == 4) {
                     Intent i = new Intent(getApplicationContext(), MainContainerActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);

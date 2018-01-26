@@ -153,8 +153,6 @@ public class NetworkClient {
                     Log.i("usern", "Updated");
                 }
             });
-          /*  getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath()).document(mach.getId())
-                    .set(new PostMachine(mach.getName(), mach.getTimeToReach(), mach.getIdMaterialToGive(), user.getIdUser(), mach.getLvl()));*/
 
             getUserDocumentReferenc()
                     .get()
@@ -181,6 +179,44 @@ public class NetworkClient {
         }
     }
 
+    public void addWorker(final Worker worker) {
+        getUserDocumentReferenc()
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document != null) {
+                                ArrayList<String> oldData = (ArrayList<String>) document.getData().get("idWorkers");
+                                ArrayList<String> newData = new ArrayList<String>();
+                                if (oldData != null)
+                                    newData.addAll(oldData);
+                                if (!worker.getId().isEmpty()) {
+                                    newData.add(worker.getId());
+
+                                    getUserDocumentReferenc()
+                                            .update("idWorkers", newData);
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    public void addWorkerToMachine(Machine machine, Worker worker) {
+        WriteBatch batch = getBaseRef().batch();
+        DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
+                .document(machine.getId());
+        batch.update(sfRef, "workerId", worker.getId());
+        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.i("usern", "Updated Machine");
+            }
+        });
+    }
+
     public void parseAllComponents() {
         parseDefaultMachines();
         parseMaterials();
@@ -190,8 +226,10 @@ public class NetworkClient {
     }
 
     public void compose() {
+        composeMachineWorker();
         composeUserMachine();
         composeUserMaterials();
+        composeUserWorkers();
     }
 
     public void parseDefaultMachines() {
@@ -332,6 +370,32 @@ public class NetworkClient {
 
     }
 
+    public void composeMachineWorker() {
+        QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
+                .whereEqualTo("userId", getFirebaseUser().getUid())
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            try (Realm mRealm = Realm.getDefaultInstance()) {
+                                mRealm.beginTransaction();
+                                for (DocumentSnapshot single : task.getResult()) {
+                                    Machine machine = mRealm.where(Machine.class).equalTo("id", single.getId()).findFirst();
+                                    if (single.getString("workerId") != null) {
+                                        Worker worker = mRealm.where(Worker.class).equalTo("id", single.getString("workerId")).findFirst();
+                                        if (worker != null && machine != null)
+                                            machine.setWorker(worker);
+                                    }
+                                }
+                                mRealm.commitTransaction();
+                            }
+                            mCallBack.get(COMPOSERS).addOnSucsses(USERS_MACHINE);
+                        }
+                    }
+                });
+    }
+
     public void composeUserMachine() {
         final DocumentReference userRef = getUserDocumentReferenc();
         userRef.get()
@@ -406,6 +470,44 @@ public class NetworkClient {
 
     }
 
+    public void composeUserWorkers() {
+        final DocumentReference userRef = getUserDocumentReferenc();
+        userRef.get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        try (Realm realm = Realm.getDefaultInstance()) {
+                            if (task.isSuccessful()) {
+                                final DocumentSnapshot document = task.getResult();
 
+                                realm.executeTransaction(new Realm.Transaction() {
+                                    @Override
+                                    public void execute(final Realm realm) {
+                                        if (document.getData().get("idWorkers") != null) {
+                                            final User userRealm = realm.where(User.class).equalTo("idUser", userRef.getId()).findFirst();
+                                            if (document.getData().get("idWorkers") instanceof ArrayList) {
+                                                ArrayList workers = (ArrayList) document.getData().get("idWorkers");
+                                                for (Object i : workers) {
+                                                    if (i instanceof String) {
+                                                        String id = (String) i;
+                                                        Worker worker = realm.where(Worker.class).equalTo("id", id).findFirst();
+
+                                                        if (worker != null && !userRealm.getWorkers().contains(worker))
+                                                            userRealm.addWorker(worker);
+
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        mCallBack.get(COMPOSERS).addOnSucsses(WORKERS);
+                                    }
+                                });
+                            }
+                        }
+                    }
+                });
+
+    }
 }
 
