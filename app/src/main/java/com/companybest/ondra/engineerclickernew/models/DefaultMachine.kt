@@ -9,4 +9,5 @@ open class DefaultMachine : RealmObject() {
     var name: String? = null
     var timeToReach: Int = 0
     var idMaterialToGive: String = ""
+    var numberOfMaterialsToGive: Int = 0
 }

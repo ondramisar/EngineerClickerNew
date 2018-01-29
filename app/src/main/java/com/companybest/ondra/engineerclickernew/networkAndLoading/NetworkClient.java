@@ -73,7 +73,7 @@ public class NetworkClient {
                                     });
                                 } else {
                                     Long cur = System.currentTimeMillis() / 1000;
-                                    if ((cur - machine.getTimeBeffore()) > machine.getTimeToReach()) {
+                                    if ((cur - machine.getTimeBeffore()) > (machine.getTimeToReach() - ((machine.getWorker().getTimeCutBy() / 100) * machine.getTimeToReach()))) {
                                         realm.executeTransaction(new Realm.Transaction() {
                                             @Override
                                             public void execute(Realm realm) {
@@ -87,7 +87,7 @@ public class NetworkClient {
                                                             .document(mat.getId());
 
                                                     if (!user.getMaterials().contains(mat)) {
-                                                        mat.setNumberOf(1);
+                                                        mat.setNumberOf(machine.getNumberOfMaterialsToGive() * machine.getWorker().getMaterialMultiplayer());
                                                         user.addMaterial(mat);
 
                                                         batch.update(sfRef, "numberOf", mat.getNumberOf());
@@ -96,7 +96,7 @@ public class NetworkClient {
                                                     } else {
                                                         Material material = user.getMaterials().where().equalTo("id", machine.getIdMaterialToGive()).findFirst();
                                                         if (material != null) {
-                                                            material.setNumberOf(material.getNumberOf() + 1);
+                                                            material.setNumberOf(material.getNumberOf() + (machine.getNumberOfMaterialsToGive() * machine.getWorker().getMaterialMultiplayer()));
 
                                                             batch.update(sfRef, "numberOf", material.getNumberOf());
 
@@ -129,6 +129,7 @@ public class NetworkClient {
             mach.setTimeToReach(machDef.getTimeToReach());
             mach.setIdMaterialToGive(machDef.getIdMaterialToGive());
             mach.setLvl(1);
+            mach.setNumberOfMaterialsToGive(machDef.getNumberOfMaterialsToGive());
             it.beginTransaction();
             it.copyToRealmOrUpdate(mach);
             it.commitTransaction();
@@ -146,7 +147,7 @@ public class NetworkClient {
 
             WriteBatch batch = getBaseRef().batch();
             DocumentReference sfRef = getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath()).document(mach.getId());
-            batch.set(sfRef, new PostMachine(mach.getName(), mach.getTimeToReach(), mach.getIdMaterialToGive(), user.getIdUser(), mach.getLvl()));
+            batch.set(sfRef, new PostMachine(mach.getName(), mach.getTimeToReach(), mach.getIdMaterialToGive(), user.getIdUser(), mach.getLvl(), mach.getNumberOfMaterialsToGive()));
             batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -217,6 +218,19 @@ public class NetworkClient {
         });
     }
 
+    public void removeWorkerToMachine(Machine machine) {
+        WriteBatch batch = getBaseRef().batch();
+        DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
+                .document(machine.getId());
+        batch.update(sfRef, "workerId", null);
+        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.i("usern", "Updated Machine");
+            }
+        });
+    }
+
     public void parseAllComponents() {
         parseDefaultMachines();
         parseMaterials();
@@ -247,6 +261,7 @@ public class NetworkClient {
                                     m.setName((java.lang.String) single.get("name"));
                                     m.setTimeToReach(single.getLong("timeToReach").intValue());
                                     m.setIdMaterialToGive(single.getString("idMaterialToGive"));
+                                    m.setNumberOfMaterialsToGive(single.getLong("numberOfMaterialsToGive").intValue());
 
                                     mRealm.copyToRealmOrUpdate(m);
                                 }
@@ -274,6 +289,7 @@ public class NetworkClient {
                                     m.setName((java.lang.String) single.get("name"));
                                     m.setTimeToReach(single.getLong("timeToReach").intValue());
                                     m.setIdMaterialToGive(single.getString("idMaterialToGive"));
+                                    m.setNumberOfMaterialsToGive(single.getLong("numberOfMaterialsToGive").intValue());
 
                                     mRealm.copyToRealmOrUpdate(m);
                                 }
@@ -298,6 +314,7 @@ public class NetworkClient {
                                     Material m = new Material();
                                     m.setId(single.getId());
                                     m.setValue(single.getLong("value").intValue());
+                                    m.setName(single.getString("name"));
 
                                     mRealm.copyToRealmOrUpdate(m);
                                 }
@@ -322,6 +339,9 @@ public class NetworkClient {
                                     Worker worker = new Worker();
                                     worker.setId(single.getId());
                                     worker.setName(single.getString("name"));
+                                    worker.setMaterialMultiplayer(single.getLong("materialMultiplayer").intValue());
+                                    worker.setTimeCutBy(single.getLong("timeCutBy").floatValue());
+                                    worker.setPayment(single.getLong("payment").floatValue());
 
                                     mRealm.copyToRealmOrUpdate(worker);
                                 }

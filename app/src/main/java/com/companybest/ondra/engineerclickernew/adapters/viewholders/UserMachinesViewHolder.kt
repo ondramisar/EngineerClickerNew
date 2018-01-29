@@ -23,6 +23,7 @@ class UserMachinesViewHolder(itemView: View) : GenericViewHolder(itemView) {
         })
         if (mach.worker != null)
             itemView.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
-
+        else
+            itemView.user_machine_worker_img.setBackgroundColor(Color.parseColor("#dddddd"))
     }
 }

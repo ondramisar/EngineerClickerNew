@@ -41,7 +41,7 @@ class UserMachineDetailFragment : Fragment() {
             view.user_machine_detail_name.text = mach.name
             view.user_machine_detail_time.text = mach.timeToReach.toString()
             if (mach.worker != null)
-                view.user_machine_worker_img.setBackgroundColor(Color.parseColor("000000"))
+                view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
 
             view.user_machine_add_worker.setOnClickListener({
                 view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
@@ -57,6 +57,15 @@ class UserMachineDetailFragment : Fragment() {
                 val ac = activity as MainContainerActivity
                 ac.startFragmentTransactionWithBackStack(MachineFragment.newInstance(MachineFragment.userMachineType))
 
+            })
+
+            view.user_machine_remove.setOnClickListener({
+                view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#dddddd"))
+                val network = NetworkClient()
+                network.removeWorkerToMachine(mach)
+                realm.executeTransaction({
+                    mach.worker = null
+                })
             })
         }
 

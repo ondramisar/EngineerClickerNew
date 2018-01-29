@@ -8,4 +8,5 @@ open class Material : RealmObject() {
     var id: String = ""
     var value: Int = 0
     var numberOf: Int = 0
+    var name:String = ""
 }

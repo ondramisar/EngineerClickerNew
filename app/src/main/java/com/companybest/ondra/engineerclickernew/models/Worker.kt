@@ -5,6 +5,9 @@ import io.realm.annotations.PrimaryKey
 
 open class Worker : RealmObject() {
     @PrimaryKey
-    var id:String = ""
-    var name:String = ""
+    var id: String = ""
+    var name: String = ""
+    var timeCutBy: Float = 0f
+    var materialMultiplayer: Int = 0
+    var payment: Float = 0f
 }

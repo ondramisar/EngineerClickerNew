@@ -11,6 +11,7 @@ import com.companybest.ondra.adron.OpenGl.TextureLibrary
 import com.companybest.ondra.adron.Rendering.AdrGlSurfaceView
 import com.companybest.ondra.engineerclickernew.R
 import com.companybest.ondra.engineerclickernew.fragments.MachineFragment
+import com.companybest.ondra.engineerclickernew.fragments.MarketFragment
 import com.companybest.ondra.engineerclickernew.fragments.ShopFragment
 import com.companybest.ondra.engineerclickernew.networkAndLoading.NetworkClient
 import kotlinx.android.synthetic.main.activity_main_container.*
@@ -29,6 +30,7 @@ class MainContainerActivity : BasicAdrClass() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
+                startFragmentTransaction(MarketFragment.newInstance())
                 return@OnNavigationItemSelectedListener true
             }
         }

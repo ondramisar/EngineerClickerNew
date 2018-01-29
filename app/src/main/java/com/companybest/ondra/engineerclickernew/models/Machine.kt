@@ -10,6 +10,7 @@ open class Machine : RealmObject() {
     var timeBeffore: Long = 0
     var timeToReach: Int = 0
     var idMaterialToGive: String = ""
+    var numberOfMaterialsToGive: Int = 0
     var lvl: Int = 0
-    var worker:Worker? = null
+    var worker: Worker? = null
 }

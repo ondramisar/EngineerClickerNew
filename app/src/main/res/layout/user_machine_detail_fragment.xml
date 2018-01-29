@@ -60,7 +60,7 @@
         android:layout_height="100dp"
         android:layout_below="@+id/user_machine_detail_name"
         android:layout_margin="10dp"
-        android:background="#dddd" />
+        android:background="#dddddd" />
 
     <ImageView
         android:id="@+id/user_machine_worker_img"
@@ -70,11 +70,12 @@
         android:layout_marginBottom="10dp"
         android:layout_marginTop="10dp"
         android:layout_toRightOf="@id/user_machine_img"
-        android:background="#dddd" />
+        android:background="#dddddd" />
 
     <Button
         android:id="@+id/user_machine_add_worker"
         android:layout_below="@id/user_machine_img"
+        android:text="add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -85,4 +86,12 @@
         android:text="confirm"
         android:layout_below="@id/user_machine_img"
         android:layout_toEndOf="@+id/user_machine_add_worker" />
+
+    <Button
+        android:id="@+id/user_machine_remove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="remove"
+        android:layout_below="@id/user_machine_img"
+        android:layout_toEndOf="@+id/user_machine_confirm" />
 </RelativeLayout>
