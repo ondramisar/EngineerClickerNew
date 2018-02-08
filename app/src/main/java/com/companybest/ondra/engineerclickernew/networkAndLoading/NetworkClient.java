@@ -262,6 +262,7 @@ public class NetworkClient {
                                     m.setTimeToReach(single.getLong("timeToReach").intValue());
                                     m.setIdMaterialToGive(single.getString("idMaterialToGive"));
                                     m.setNumberOfMaterialsToGive(single.getLong("numberOfMaterialsToGive").intValue());
+                                    m.setCost(single.getLong("cost").intValue());
 
                                     mRealm.copyToRealmOrUpdate(m);
                                 }

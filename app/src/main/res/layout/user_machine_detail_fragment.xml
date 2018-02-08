@@ -5,54 +5,15 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/user_machine_detail_lvl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:textSize="16sp"
-        tools:text="LVL 1" />
-
-    <TextView
         android:id="@+id/user_machine_detail_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_margin="11dp"
-        android:textSize="16sp"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold"
         tools:text="dddddddddddddddd" />
-
-    <TextView
-        android:id="@+id/user_machine_detail_stats"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_margin="10dp"
-        android:textSize="16sp"
-        tools:text="STATS" />
-
-    <TextView
-        android:id="@+id/user_machine_detail_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/user_machine_detail_stats"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textSize="12sp"
-        tools:text="TIME: 100000" />
-
-    <TextView
-        android:id="@+id/user_machine_detail_materials"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/user_machine_detail_time"
-        android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:textSize="12sp"
-        tools:text="MATERIALS: 100" />
 
     <ImageView
         android:id="@+id/user_machine_img"
@@ -74,24 +35,79 @@
 
     <Button
         android:id="@+id/user_machine_add_worker"
-        android:layout_below="@id/user_machine_img"
-        android:text="add"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_machine_img"
+        android:text="add" />
 
     <Button
         android:id="@+id/user_machine_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="confirm"
-        android:layout_below="@id/user_machine_img"
-        android:layout_toEndOf="@+id/user_machine_add_worker" />
+        android:layout_alignBaseline="@+id/user_machine_add_worker"
+        android:layout_alignBottom="@+id/user_machine_add_worker"
+        android:layout_toEndOf="@+id/user_machine_add_worker"
+        android:text="confirm" />
 
     <Button
         android:id="@+id/user_machine_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="remove"
         android:layout_below="@id/user_machine_img"
-        android:layout_toEndOf="@+id/user_machine_confirm" />
+        android:layout_toEndOf="@+id/user_machine_confirm"
+        android:text="remove" />
+
+    <Button
+        android:id="@+id/user_machine_play_game"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_machine_confirm"
+        android:text="PLAY GAME" />
+
+
+    <TextView
+        android:id="@+id/user_machine_detail_stats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_machine_play_game"
+        android:layout_margin="10dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        tools:text="STATS" />
+
+    <TextView
+        android:id="@+id/user_machine_detail_lvl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_machine_detail_stats"
+        android:textColor="@color/black"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textSize="12sp"
+        tools:text="LVL 1" />
+
+    <TextView
+        android:id="@+id/user_machine_detail_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_machine_detail_lvl"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        tools:text="TIME: 100000" />
+
+    <TextView
+        android:id="@+id/user_machine_detail_materials"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/user_machine_detail_time"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        tools:text="MATERIALS: 100" />
 </RelativeLayout>

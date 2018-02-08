@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/user_machine_name"
+        android:id="@+id/default_machine_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -17,22 +17,22 @@
         tools:text="dddddddddddddddd" />
 
     <TextView
-        android:id="@+id/user_machine_lvl"
+        android:id="@+id/default_machine_material"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/user_machine_name"
+        android:layout_below="@+id/default_machine_name"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="0dp"
         android:layout_marginBottom="4dp"
         android:textColor="@color/black"
         android:textSize="12sp"
-        tools:text="LVL 1" />
+        tools:text="Material: maaaaa" />
 
     <TextView
-        android:id="@+id/user_machine_time"
+        android:id="@+id/default_machine_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/user_machine_lvl"
+        android:layout_below="@+id/default_machine_material"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="0dp"
         android:textColor="@color/black"
@@ -40,31 +40,40 @@
         tools:text="TIME: 100000" />
 
     <Button
-        android:id="@+id/user_machine_detail_btn"
+        android:id="@+id/default_machine_buy_btn"
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
-        android:text="DETAIL"
-        android:layout_margin="10dp"/>
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="2dp"
+        android:text="BUY"/>
+
+    <TextView
+        android:id="@+id/default_machine_cost"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/default_machine_buy_btn"
+        android:layout_below="@+id/default_machine_buy_btn"
+        android:layout_marginRight="2dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginBottom="2dp"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        tools:text="cost: 1000000000000" />
 
     <ImageView
-        android:id="@+id/user_machine_img"
+        android:id="@+id/default_machine_img"
         android:layout_width="200dp"
         android:layout_height="100dp"
-        android:layout_below="@+id/user_machine_time"
+        android:layout_below="@+id/default_machine_time"
+        android:layout_centerHorizontal="true"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
         android:background="#dddd" />
 
-    <ImageView
-        android:id="@+id/user_machine_worker_img"
-        android:layout_width="80dp"
-        android:layout_height="100dp"
-        android:layout_below="@+id/user_machine_time"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_toRightOf="@id/user_machine_img"
-        android:background="#dddd" />
 </RelativeLayout>

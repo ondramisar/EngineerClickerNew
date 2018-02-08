@@ -14,12 +14,11 @@ class UserMachinesViewHolder(itemView: View) : GenericViewHolder(itemView) {
     override fun onBindViewHolder(position: Int, data: RealmModel?) {
         val mach = data as Machine
         itemView.user_machine_name.text = mach.name
-        itemView.user_machine_lvl.text = mach.lvl.toString()
-        itemView.user_machine_time.text = mach.timeToReach.toString()
-        itemView.setOnClickListener({
+        itemView.user_machine_lvl.text = "LVL. " + mach.lvl.toString()
+        itemView.user_machine_time.text = "TIME: " + mach.timeToReach.toString()
+        itemView.user_machine_detail_btn.setOnClickListener({
             val activity = itemView.context as MainContainerActivity
             activity.startFragmentTransactionWithBackStack(UserMachineDetailFragment.newInstance(mach.id))
-
         })
         if (mach.worker != null)
             itemView.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))

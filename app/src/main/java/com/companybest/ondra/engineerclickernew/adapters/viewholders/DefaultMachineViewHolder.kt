@@ -9,14 +9,17 @@ import com.companybest.ondra.engineerclickernew.networkAndLoading.NetworkClient
 import com.google.firebase.auth.FirebaseAuth
 import io.realm.Realm
 import io.realm.RealmModel
-import kotlinx.android.synthetic.main.user_machine_item.view.*
+import kotlinx.android.synthetic.main.default_machine_item.view.*
 
 class DefaultMachineViewHolder(itemView: View) : GenericViewHolder(itemView) {
 
     override fun onBindViewHolder(position: Int, data: RealmModel?) {
         val mach = data as DefaultMachine
-        itemView.user_machine_name.text = mach.name
-        itemView.setOnClickListener({
+        itemView.default_machine_name.text = mach.name
+        itemView.default_machine_material.text = mach.idMaterialToGive
+        itemView.default_machine_time.text = "TIME: " + mach.timeToReach
+        itemView.default_machine_cost.text = "COST: " + mach.cost.toString()
+        itemView.default_machine_buy_btn.setOnClickListener({
             val realm = Realm.getDefaultInstance()
             val mAuth = FirebaseAuth.getInstance()
             val userFire = mAuth.currentUser

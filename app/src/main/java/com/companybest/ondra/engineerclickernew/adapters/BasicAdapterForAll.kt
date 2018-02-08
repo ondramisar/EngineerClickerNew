@@ -34,7 +34,7 @@ class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<Gen
         var viewholder: GenericViewHolder? = null
         when (viewType) {
             MACHINE_TYPE -> viewholder = UserMachinesViewHolder(inflater.inflate(R.layout.user_machine_item, parent, false))
-            DEFAULT_MACHINE_TYPE -> viewholder = DefaultMachineViewHolder(inflater.inflate(R.layout.user_machine_item, parent, false))
+            DEFAULT_MACHINE_TYPE -> viewholder = DefaultMachineViewHolder(inflater.inflate(R.layout.default_machine_item, parent, false))
             WORKERS_TYPE -> viewholder = WorkersViewHolder(inflater.inflate(R.layout.worker_item, parent, false))
             MARKET_TYPE -> viewholder = MaterialViewHolder(inflater.inflate(R.layout.material_item, parent, false))
         }

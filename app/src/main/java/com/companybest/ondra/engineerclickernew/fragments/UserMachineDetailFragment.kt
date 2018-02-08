@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.companybest.ondra.engineerclickernew.R
 import com.companybest.ondra.engineerclickernew.mainContainer.MainContainerActivity
 import com.companybest.ondra.engineerclickernew.models.Machine
+import com.companybest.ondra.engineerclickernew.models.Material
 import com.companybest.ondra.engineerclickernew.models.Worker
 import com.companybest.ondra.engineerclickernew.networkAndLoading.NetworkClient
 import io.realm.Realm
@@ -37,9 +38,12 @@ class UserMachineDetailFragment : Fragment() {
         val realm = Realm.getDefaultInstance()
         val mach = realm.where(Machine::class.java).equalTo("id", id).findFirst()
         if (mach != null) {
-            view.user_machine_detail_lvl.text = mach.lvl.toString()
+            view.user_machine_detail_stats.text = "STATS"
+            view.user_machine_detail_lvl.text = "LVL. " + mach.lvl.toString()
             view.user_machine_detail_name.text = mach.name
-            view.user_machine_detail_time.text = mach.timeToReach.toString()
+            view.user_machine_detail_time.text = "time: " + mach.timeToReach.toString()
+            val mat = realm.where(Material::class.java).equalTo("id", mach.idMaterialToGive).findFirst()
+            view.user_machine_detail_materials.text = "MATERIAL: " + (mat?.name ?: "none")
             if (mach.worker != null)
                 view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
 
