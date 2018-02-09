@@ -14,7 +14,10 @@ class WorkersViewHolder(itemView: View) : GenericViewHolder(itemView) {
     override fun onBindViewHolder(position: Int, data: RealmModel?) {
         val worker = data as Worker
         itemView.worker_name.text = worker.name
-        itemView.setOnClickListener({
+        itemView.worker_pay.text = "DAY PAYMENT" + worker.payment.toString()
+        itemView.worker_time.text = "TIME SHORTEN BY: " + worker.timeCutBy.toString() + " %"
+        itemView.worker_material.text = "MATERIAL MULTIPLY BY: " + worker.materialMultiplayer.toString()
+        itemView.worker_buy.setOnClickListener({
             val network = NetworkClient()
             network.addWorker(worker)
             Log.i("usern", "worker added")

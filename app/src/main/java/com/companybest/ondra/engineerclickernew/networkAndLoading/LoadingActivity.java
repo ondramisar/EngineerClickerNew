@@ -23,11 +23,6 @@ public class LoadingActivity extends AppCompatActivity {
         final NetworkClient networkClient = new NetworkClient();
         networkClient.mCallBack.put(NetworkClient.COMPONENTS, new CallBackFirebase() {
             @Override
-            public void onSucsses() {
-
-            }
-
-            @Override
             public void addOnSucsses(String key) {
                 keys.add(key);
 
@@ -38,11 +33,6 @@ public class LoadingActivity extends AppCompatActivity {
         });
 
         networkClient.mCallBack.put(NetworkClient.COMPOSERS, new CallBackFirebase() {
-            @Override
-            public void onSucsses() {
-
-            }
-
             @Override
             public void addOnSucsses(String key) {
                 components.add(key);

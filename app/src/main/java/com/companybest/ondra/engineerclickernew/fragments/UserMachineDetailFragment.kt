@@ -1,5 +1,6 @@
 package com.companybest.ondra.engineerclickernew.fragments
 
+import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -14,6 +15,8 @@ import com.companybest.ondra.engineerclickernew.models.Worker
 import com.companybest.ondra.engineerclickernew.networkAndLoading.NetworkClient
 import io.realm.Realm
 import kotlinx.android.synthetic.main.user_machine_detail_fragment.view.*
+
+
 
 
 class UserMachineDetailFragment : Fragment() {
@@ -48,6 +51,11 @@ class UserMachineDetailFragment : Fragment() {
                 view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
 
             view.user_machine_add_worker.setOnClickListener({
+                //TODO add a recycler view with choice of workers
+                val dialog = Dialog(context)
+                dialog.setContentView(R.layout.machine_worker_dialog)
+                dialog.setTitle("WORKERS")
+                dialog.show()
                 view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
                 val worker = realm.where(Worker::class.java).findFirst()
                 val network = NetworkClient()

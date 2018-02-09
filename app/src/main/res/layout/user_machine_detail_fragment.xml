@@ -15,6 +15,17 @@
         android:textStyle="bold"
         tools:text="dddddddddddddddd" />
 
+    <Button
+        android:id="@+id/user_machine_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:text="CONFIRM"/>
+
     <ImageView
         android:id="@+id/user_machine_img"
         android:layout_width="180dp"
@@ -41,27 +52,27 @@
         android:text="add" />
 
     <Button
-        android:id="@+id/user_machine_confirm"
+        android:id="@+id/user_machine_upgrade"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/user_machine_add_worker"
         android:layout_alignBottom="@+id/user_machine_add_worker"
         android:layout_toEndOf="@+id/user_machine_add_worker"
-        android:text="confirm" />
+        android:text="Upgarede" />
 
     <Button
         android:id="@+id/user_machine_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/user_machine_img"
-        android:layout_toEndOf="@+id/user_machine_confirm"
+        android:layout_toEndOf="@+id/user_machine_upgrade"
         android:text="remove" />
 
     <Button
         android:id="@+id/user_machine_play_game"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/user_machine_confirm"
+        android:layout_below="@id/user_machine_upgrade"
         android:text="PLAY GAME" />
 
 
