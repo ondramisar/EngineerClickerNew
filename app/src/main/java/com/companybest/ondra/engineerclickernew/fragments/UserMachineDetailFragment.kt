@@ -4,16 +4,24 @@ import android.app.Dialog
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.companybest.ondra.engineerclickernew.R
+import com.companybest.ondra.engineerclickernew.adapters.BasicAdapterForAll
 import com.companybest.ondra.engineerclickernew.mainContainer.MainContainerActivity
 import com.companybest.ondra.engineerclickernew.models.Machine
 import com.companybest.ondra.engineerclickernew.models.Material
+import com.companybest.ondra.engineerclickernew.models.User
 import com.companybest.ondra.engineerclickernew.models.Worker
 import com.companybest.ondra.engineerclickernew.networkAndLoading.NetworkClient
+import com.companybest.ondra.engineerclickernew.utilities.OnClick
+import com.google.firebase.auth.FirebaseAuth
 import io.realm.Realm
+import io.realm.RealmList
+import io.realm.RealmModel
+import kotlinx.android.synthetic.main.machine_worker_dialog.*
 import kotlinx.android.synthetic.main.user_machine_detail_fragment.view.*
 
 
@@ -51,18 +59,32 @@ class UserMachineDetailFragment : Fragment() {
                 view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
 
             view.user_machine_add_worker.setOnClickListener({
-                //TODO add a recycler view with choice of workers
                 val dialog = Dialog(context)
                 dialog.setContentView(R.layout.machine_worker_dialog)
                 dialog.setTitle("WORKERS")
-                dialog.show()
-                view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
-                val worker = realm.where(Worker::class.java).findFirst()
-                val network = NetworkClient()
-                network.addWorkerToMachine(mach, worker)
-                realm.executeTransaction({
-                    mach.worker = worker
-                })
+                val mAuth = FirebaseAuth.getInstance()
+                val userFire = mAuth.currentUser
+                val user = realm.where(User::class.java).equalTo("idUser", userFire?.uid).findFirst()
+                val workers = RealmList<RealmModel>()
+                if (user !=null) {
+                    workers.addAll(user.workers)
+                    val adapter = BasicAdapterForAll(workers, OnClick {
+                        if (it is Worker) {
+                            val worker = it
+                            view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
+                            val network = NetworkClient()
+                            network.addWorkerToMachine(mach, worker )
+                            realm.executeTransaction({
+                                mach.worker = worker
+                            })
+                            dialog.dismiss()
+                        }
+                    }, "worker")
+                    val linearManaget = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                    dialog.machine_workers_choice.adapter = adapter
+                    dialog.machine_workers_choice.layoutManager = linearManaget
+                    dialog.show()
+                }
             })
 
             view.user_machine_confirm.setOnClickListener({

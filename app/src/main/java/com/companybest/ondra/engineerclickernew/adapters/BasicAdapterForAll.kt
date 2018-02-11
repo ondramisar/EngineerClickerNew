@@ -4,15 +4,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.companybest.ondra.engineerclickernew.R
-import com.companybest.ondra.engineerclickernew.adapters.viewholders.DefaultMachineViewHolder
-import com.companybest.ondra.engineerclickernew.adapters.viewholders.MaterialViewHolder
-import com.companybest.ondra.engineerclickernew.adapters.viewholders.UserMachinesViewHolder
-import com.companybest.ondra.engineerclickernew.adapters.viewholders.WorkersViewHolder
+import com.companybest.ondra.engineerclickernew.adapters.viewholders.*
 import com.companybest.ondra.engineerclickernew.adapters.viewholders.generic.GenericViewHolder
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine
 import com.companybest.ondra.engineerclickernew.models.Machine
 import com.companybest.ondra.engineerclickernew.models.Material
 import com.companybest.ondra.engineerclickernew.models.Worker
+import com.companybest.ondra.engineerclickernew.utilities.OnClick
 import io.realm.RealmList
 import io.realm.RealmModel
 
@@ -23,10 +21,18 @@ class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<Gen
     private val WORKERS_TYPE = 2
     private val MARKET_TYPE = 3
 
+    private var type: String = ""
+    private var callback: OnClick? = null
+
     var mData: RealmList<RealmModel>? = null
 
     init {
         mData = data
+    }
+
+    constructor(data: RealmList<RealmModel>, callback: OnClick, type: String) : this(data) {
+        this.type = type
+        this.callback = callback
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): GenericViewHolder {
@@ -35,7 +41,11 @@ class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<Gen
         when (viewType) {
             MACHINE_TYPE -> viewholder = UserMachinesViewHolder(inflater.inflate(R.layout.user_machine_item, parent, false))
             DEFAULT_MACHINE_TYPE -> viewholder = DefaultMachineViewHolder(inflater.inflate(R.layout.default_machine_item, parent, false))
-            WORKERS_TYPE -> viewholder = WorkersViewHolder(inflater.inflate(R.layout.worker_item, parent, false))
+            WORKERS_TYPE ->
+                viewholder = if (type == "worker")
+                    WorkersMachineViewHolder(inflater.inflate(R.layout.worker_item, parent, false), callback!!)
+                else
+                    WorkersViewHolder(inflater.inflate(R.layout.worker_item, parent, false))
             MARKET_TYPE -> viewholder = MaterialViewHolder(inflater.inflate(R.layout.material_item, parent, false))
         }
         return viewholder!!
@@ -46,16 +56,13 @@ class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<Gen
     }
 
     override fun getItemViewType(position: Int): Int {
-        if (mData?.get(position) is Machine) {
-            return MACHINE_TYPE
-        } else if (mData?.get(position) is DefaultMachine) {
-            return DEFAULT_MACHINE_TYPE
-        } else if (mData?.get(position) is Worker){
-            return WORKERS_TYPE
-        }else if (mData?.get(position) is Material) {
-            return MARKET_TYPE
+        when {
+            mData?.get(position) is Machine -> return MACHINE_TYPE
+            mData?.get(position) is DefaultMachine -> return DEFAULT_MACHINE_TYPE
+            mData?.get(position) is Worker -> return WORKERS_TYPE
+            mData?.get(position) is Material -> return MARKET_TYPE
+            else -> return 0
         }
-        return 0
     }
 
     override fun getItemCount(): Int {

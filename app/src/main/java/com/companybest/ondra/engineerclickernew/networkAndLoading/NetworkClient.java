@@ -34,7 +34,6 @@ import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUt
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getMaterialPath;
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getUserDocumentReferenc;
 
-//TODO add WriteBatch from firebase
 public class NetworkClient {
 
     public static String DEFAULT_MACHINE = "DEFAULT_MACHINE";
@@ -180,7 +179,7 @@ public class NetworkClient {
         }
     }
 
-    public void addWorker(final Worker worker) {
+    public void addWorker(final Worker worker, final User user) {
         getUserDocumentReferenc()
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -195,6 +194,14 @@ public class NetworkClient {
                                     newData.addAll(oldData);
                                 if (!worker.getId().isEmpty()) {
                                     newData.add(worker.getId());
+                                    try (Realm realm = Realm.getDefaultInstance()){
+                                     realm.executeTransaction(new Realm.Transaction() {
+                                         @Override
+                                         public void execute(Realm realm) {
+                                             user.addWorker(worker);
+                                         }
+                                     });
+                                    }
 
                                     getUserDocumentReferenc()
                                             .update("idWorkers", newData);
