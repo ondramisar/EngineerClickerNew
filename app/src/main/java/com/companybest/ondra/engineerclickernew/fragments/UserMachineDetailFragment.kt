@@ -65,8 +65,8 @@ class UserMachineDetailFragment : Fragment() {
                 val mAuth = FirebaseAuth.getInstance()
                 val userFire = mAuth.currentUser
                 val user = realm.where(User::class.java).equalTo("idUser", userFire?.uid).findFirst()
-                val workers = RealmList<RealmModel>()
                 if (user !=null) {
+                    val workers = RealmList<RealmModel>()
                     workers.addAll(user.workers)
                     val adapter = BasicAdapterForAll(workers, OnClick {
                         if (it is Worker) {
@@ -76,6 +76,7 @@ class UserMachineDetailFragment : Fragment() {
                             network.addWorkerToMachine(mach, worker )
                             realm.executeTransaction({
                                 mach.worker = worker
+                                worker.isOnMachine = true
                             })
                             dialog.dismiss()
                         }
@@ -98,6 +99,7 @@ class UserMachineDetailFragment : Fragment() {
                 val network = NetworkClient()
                 network.removeWorkerToMachine(mach)
                 realm.executeTransaction({
+                    mach.worker?.isOnMachine = false
                     mach.worker = null
                 })
             })

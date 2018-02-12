@@ -10,4 +10,6 @@ open class Worker : RealmObject() {
     var timeCutBy: Float = 0f
     var materialMultiplayer: Int = 0
     var payment: Float = 0f
+    var isBought:Boolean = false
+    var isOnMachine:Boolean = false
 }

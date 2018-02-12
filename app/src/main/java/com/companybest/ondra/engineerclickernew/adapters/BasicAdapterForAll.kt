@@ -24,13 +24,14 @@ class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<Gen
     private var type: String = ""
     private var callback: OnClick? = null
 
-    var mData: RealmList<RealmModel>? = null
+    private var mData: RealmList<RealmModel>? = null
 
     init {
         mData = data
     }
 
     constructor(data: RealmList<RealmModel>, callback: OnClick, type: String) : this(data) {
+        //TODO thing of better way to do this
         this.type = type
         this.callback = callback
     }
@@ -43,7 +44,7 @@ class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<Gen
             DEFAULT_MACHINE_TYPE -> viewholder = DefaultMachineViewHolder(inflater.inflate(R.layout.default_machine_item, parent, false))
             WORKERS_TYPE ->
                 viewholder = if (type == "worker")
-                    WorkersMachineViewHolder(inflater.inflate(R.layout.worker_item, parent, false), callback!!)
+                    WorkersMachineViewHolder(inflater.inflate(R.layout.worker_machine_item, parent, false), callback!!)
                 else
                     WorkersViewHolder(inflater.inflate(R.layout.worker_item, parent, false))
             MARKET_TYPE -> viewholder = MaterialViewHolder(inflater.inflate(R.layout.material_item, parent, false))
@@ -56,12 +57,12 @@ class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<Gen
     }
 
     override fun getItemViewType(position: Int): Int {
-        when {
-            mData?.get(position) is Machine -> return MACHINE_TYPE
-            mData?.get(position) is DefaultMachine -> return DEFAULT_MACHINE_TYPE
-            mData?.get(position) is Worker -> return WORKERS_TYPE
-            mData?.get(position) is Material -> return MARKET_TYPE
-            else -> return 0
+        return when {
+            mData?.get(position) is Machine -> MACHINE_TYPE
+            mData?.get(position) is DefaultMachine -> DEFAULT_MACHINE_TYPE
+            mData?.get(position) is Worker -> WORKERS_TYPE
+            mData?.get(position) is Material -> MARKET_TYPE
+            else -> 0
         }
     }
 

@@ -189,7 +189,7 @@ public class NetworkClient {
                             DocumentSnapshot document = task.getResult();
                             if (document != null) {
                                 ArrayList<String> oldData = (ArrayList<String>) document.getData().get("idWorkers");
-                                ArrayList<String> newData = new ArrayList<String>();
+                                ArrayList<String> newData = new ArrayList<>();
                                 if (oldData != null)
                                     newData.addAll(oldData);
                                 if (!worker.getId().isEmpty()) {
@@ -199,6 +199,7 @@ public class NetworkClient {
                                          @Override
                                          public void execute(Realm realm) {
                                              user.addWorker(worker);
+                                             worker.setBought(true);
                                          }
                                      });
                                     }
@@ -412,8 +413,10 @@ public class NetworkClient {
                                     Machine machine = mRealm.where(Machine.class).equalTo("id", single.getId()).findFirst();
                                     if (single.getString("workerId") != null) {
                                         Worker worker = mRealm.where(Worker.class).equalTo("id", single.getString("workerId")).findFirst();
-                                        if (worker != null && machine != null)
+                                        if (worker != null && machine != null) {
+                                            worker.setOnMachine(true);
                                             machine.setWorker(worker);
+                                        }
                                     }
                                 }
                                 mRealm.commitTransaction();
@@ -519,10 +522,10 @@ public class NetworkClient {
                                                     if (i instanceof String) {
                                                         String id = (String) i;
                                                         Worker worker = realm.where(Worker.class).equalTo("id", id).findFirst();
-
-                                                        if (worker != null && !userRealm.getWorkers().contains(worker))
+                                                        if (userRealm != null && worker != null && !userRealm.getWorkers().contains(worker)) {
+                                                            worker.setBought(true);
                                                             userRealm.addWorker(worker);
-
+                                                        }
                                                     }
                                                 }
                                             }
