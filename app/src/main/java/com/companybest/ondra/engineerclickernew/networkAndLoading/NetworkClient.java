@@ -194,14 +194,14 @@ public class NetworkClient {
                                     newData.addAll(oldData);
                                 if (!worker.getId().isEmpty()) {
                                     newData.add(worker.getId());
-                                    try (Realm realm = Realm.getDefaultInstance()){
-                                     realm.executeTransaction(new Realm.Transaction() {
-                                         @Override
-                                         public void execute(Realm realm) {
-                                             user.addWorker(worker);
-                                             worker.setBought(true);
-                                         }
-                                     });
+                                    try (Realm realm = Realm.getDefaultInstance()) {
+                                        realm.executeTransaction(new Realm.Transaction() {
+                                            @Override
+                                            public void execute(Realm realm) {
+                                                user.addWorker(worker);
+                                                worker.setBought(true);
+                                            }
+                                        });
                                     }
 
                                     getUserDocumentReferenc()
@@ -235,6 +235,18 @@ public class NetworkClient {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 Log.i("usern", "Updated Machine");
+            }
+        });
+    }
+
+    public void setTimeOutOfAppForUser(Long time) {
+        WriteBatch batch = getBaseRef().batch();
+        DocumentReference sfRef = getUserDocumentReferenc();
+        batch.update(sfRef, "timeOutOfApp", time);
+        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.i("usern", "updated time");
             }
         });
     }
@@ -385,6 +397,8 @@ public class NetworkClient {
                                         if (document.getString("email") != null)
                                             if (!document.getString("email").isEmpty())
                                                 userRealm.setEmail(document.getString("email"));
+                                        if (document.getLong("timeOutOfApp") != null)
+                                            userRealm.setLastTimeOutOfApp(document.getLong("timeOutOfApp"));
 
                                         realm.copyToRealmOrUpdate(userRealm);
 

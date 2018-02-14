@@ -50,6 +50,16 @@ class MainContainerActivity : BasicAdrClass() {
         setUpEngine(engine, this, adrView)
     }
 
+    override fun onStop() {
+        super.onStop()
+        val net = NetworkClient()
+        net.setTimeOutOfAppForUser(System.currentTimeMillis())
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
     override fun setUpScene(): Scene {
         return Scene()
     }
@@ -80,10 +90,9 @@ class MainContainerActivity : BasicAdrClass() {
     }
 
     override fun onBackPressed() {
-        if(fragmentManager.backStackEntryCount == 0) {
+        if (fragmentManager.backStackEntryCount == 0) {
             super.onBackPressed()
-        }
-        else {
+        } else {
             fragmentManager.popBackStack()
         }
     }
