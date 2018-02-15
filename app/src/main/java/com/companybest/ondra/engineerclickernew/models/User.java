@@ -13,6 +13,7 @@ public class User extends RealmObject {
     private int coins;
     private Long lastUpdateMaterial;
     private Long lastTimeOutOfApp;
+    private Long lastPayment;
     private RealmList<Machine> machines;
     private RealmList<Material> mMaterials;
     private RealmList<Worker> mWorkers;
@@ -69,6 +70,14 @@ public class User extends RealmObject {
 
     public void setLastTimeOutOfApp(Long lastTimeOutOfApp) {
         this.lastTimeOutOfApp = lastTimeOutOfApp;
+    }
+
+    public Long getLastPayment() {
+        return lastPayment;
+    }
+
+    public void setLastPayment(Long lastPayment) {
+        this.lastPayment = lastPayment;
     }
 
     public RealmList<Machine> getMachines() {

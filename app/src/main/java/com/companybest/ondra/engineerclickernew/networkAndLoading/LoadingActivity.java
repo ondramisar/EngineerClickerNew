@@ -38,10 +38,19 @@ public class LoadingActivity extends AppCompatActivity {
                 components.add(key);
 
                 if (components.size() == 4) {
-                    Intent i = new Intent(getApplicationContext(), MainContainerActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
+                    networkClient.update();
                 }
+            }
+        });
+
+
+        networkClient.mCallBack.put(NetworkClient.UPDATE, new CallBackFirebase() {
+            @Override
+            public void addOnSucsses(String key) {
+                Intent i = new Intent(getApplicationContext(), MainContainerActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+
             }
         });
         networkClient.parseAllComponents();

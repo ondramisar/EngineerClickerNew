@@ -9,7 +9,7 @@ open class Worker : RealmObject() {
     var name: String = ""
     var timeCutBy: Float = 0f
     var materialMultiplayer: Int = 0
-    var payment: Float = 0f
+    var payment: Int = 0
     var isBought:Boolean = false
     var isOnMachine:Boolean = false
 }

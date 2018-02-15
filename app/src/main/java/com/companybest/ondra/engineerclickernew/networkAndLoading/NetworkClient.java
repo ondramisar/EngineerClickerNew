@@ -23,6 +23,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -44,6 +46,7 @@ public class NetworkClient {
 
     public static String COMPONENTS = "COMPONENTS";
     public static String COMPOSERS = "COMPOSERS";
+    public static String UPDATE = "UPDATE";
 
     public HashMap<String, CallBackFirebase> mCallBack;
 
@@ -251,6 +254,18 @@ public class NetworkClient {
         });
     }
 
+    public void setLastPayment(Long lastPayment) {
+        WriteBatch batch = getBaseRef().batch();
+        DocumentReference sfRef = getUserDocumentReferenc();
+        batch.update(sfRef, "lastPayment", lastPayment);
+        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Log.i("usern", "updated time");
+            }
+        });
+    }
+
     public void parseAllComponents() {
         parseDefaultMachines();
         parseMaterials();
@@ -264,6 +279,62 @@ public class NetworkClient {
         composeUserMachine();
         composeUserMaterials();
         composeUserWorkers();
+    }
+
+    public void update() {
+        updateBackground();
+    }
+
+    private void updateBackground() {
+        try (Realm realm = Realm.getDefaultInstance()) {
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            FirebaseUser userFire = mAuth.getCurrentUser();
+            final User user = realm.where(User.class).equalTo("idUser", userFire.getUid()).findFirst();
+            if (user != null) {
+                Long time = user.getLastTimeOutOfApp();
+                Long timeNow = System.currentTimeMillis();
+                Long difTime = (timeNow - time) / 1000;
+                for (final Machine machine : user.getMachines()) {
+                    if (machine.getWorker() != null) {
+                        final Long machTime = difTime / machine.getTimeToReach();
+                        final Material material = realm.where(Material.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
+                        if (user.getMaterials().contains(material) && material != null) {
+                            realm.executeTransaction(new Realm.Transaction() {
+                                @Override
+                                public void execute(Realm realm) {
+                                    //       material.setNumberOf(material.getNumberOf() + machTime.intValue());
+                                    user.getMaterials().where().equalTo("id", material.getId()).findFirst().setNumberOf(material.getNumberOf() + machTime.intValue());
+                                }
+                            });
+                        }
+                    }
+                }
+
+                Long lastPayment = user.getLastPayment();
+                Date dateNow = new Date(timeNow);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(dateNow);
+                Date dateLasPayment = new Date(lastPayment);
+                Calendar calendarPayment = Calendar.getInstance();
+                calendarPayment.setTime(dateLasPayment);
+                int dayNow = calendar.get(Calendar.DAY_OF_YEAR);
+                final int dayLastPayment = calendarPayment.get(Calendar.DAY_OF_YEAR);
+                final int difference = dayNow - dayLastPayment;
+                if (difference >= 1) {
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            for (Worker worker : user.getWorkers()) {
+                                user.setCoins(user.getCoins() - (worker.getPayment() * difference));
+                            }
+                            user.setLastPayment(System.currentTimeMillis());
+                            setLastPayment(user.getLastPayment());
+                        }
+                    });
+                }
+                mCallBack.get(UPDATE).addOnSucsses(UPDATE);
+            }
+        }
     }
 
     public void parseDefaultMachines() {
@@ -362,7 +433,7 @@ public class NetworkClient {
                                     worker.setName(single.getString("name"));
                                     worker.setMaterialMultiplayer(single.getLong("materialMultiplayer").intValue());
                                     worker.setTimeCutBy(single.getLong("timeCutBy").floatValue());
-                                    worker.setPayment(single.getLong("payment").floatValue());
+                                    worker.setPayment(single.getLong("payment").intValue());
 
                                     mRealm.copyToRealmOrUpdate(worker);
                                 }
@@ -399,6 +470,9 @@ public class NetworkClient {
                                                 userRealm.setEmail(document.getString("email"));
                                         if (document.getLong("timeOutOfApp") != null)
                                             userRealm.setLastTimeOutOfApp(document.getLong("timeOutOfApp"));
+                                        if (document.getLong("lastPayment") != null)
+                                            userRealm.setLastPayment(document.getLong("lastPayment"));
+
 
                                         realm.copyToRealmOrUpdate(userRealm);
 
@@ -543,11 +617,19 @@ public class NetworkClient {
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        mCallBack.get(COMPOSERS).addOnSucsses(WORKERS);
+                                            if (userRealm != null && userRealm.getLastPayment() == null) {
+                                                for (Worker worker : userRealm.getWorkers()) {
+                                                    userRealm.setCoins(userRealm.getCoins() - worker.getPayment());
+                                                }
+                                                userRealm.setLastPayment(System.currentTimeMillis());
+                                                setLastPayment(userRealm.getLastPayment());
+                                            }
+                                        }
                                     }
                                 });
+
+                                mCallBack.get(COMPOSERS).addOnSucsses(WORKERS);
                             }
                         }
                     }
