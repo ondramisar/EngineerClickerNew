@@ -1,12 +1,10 @@
 package com.companybest.ondra.engineerclickernew.networkAndLoading;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 
 import com.companybest.ondra.engineerclickernew.R;
-import com.companybest.ondra.engineerclickernew.mainContainer.MainContainerActivity;
-import com.companybest.ondra.engineerclickernew.utilities.CallBackFirebase;
 
 import java.util.ArrayList;
 
@@ -19,8 +17,15 @@ public class LoadingActivity extends AppCompatActivity {
 
         final ArrayList<String> keys = new ArrayList<>();
         final ArrayList<String> components = new ArrayList<>();
-
-        final NetworkClient networkClient = new NetworkClient();
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        try {
+            final NetworkClient networkClient = new NetworkClient();
+            networkClient.parseDefaultMachines();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        /*
         networkClient.mCallBack.put(NetworkClient.COMPONENTS, new CallBackFirebase() {
             @Override
             public void addOnSucsses(String key) {
@@ -53,7 +58,7 @@ public class LoadingActivity extends AppCompatActivity {
 
             }
         });
-        networkClient.parseAllComponents();
+        networkClient.parseAllComponents();*/
 
     }
 }

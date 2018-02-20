@@ -8,7 +8,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.companybest.ondra.engineerclickernew"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -21,6 +21,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        targetCompatibility 1.8
+        sourceCompatibility 1.8
     }
 }
 
@@ -39,6 +43,12 @@ dependencies {
     compile 'com.google.firebase:firebase-firestore:11.4.2'
     compile 'com.android.support:multidex:1.0.2'
     implementation project(path: ':adron')
+
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.0'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
 }
 repositories {
     mavenCentral()

@@ -4,35 +4,30 @@ package com.companybest.ondra.engineerclickernew.networkAndLoading;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMachine;
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine;
 import com.companybest.ondra.engineerclickernew.models.Machine;
 import com.companybest.ondra.engineerclickernew.models.Material;
 import com.companybest.ondra.engineerclickernew.models.User;
 import com.companybest.ondra.engineerclickernew.models.Worker;
 import com.companybest.ondra.engineerclickernew.utilities.CallBackFirebase;
-import com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.UUID;
+import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmList;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getBaseRef;
-import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getFirebaseUser;
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getMaterialPath;
 import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getUserDocumentReferenc;
 
@@ -50,9 +45,35 @@ public class NetworkClient {
 
     public HashMap<String, CallBackFirebase> mCallBack;
 
-    public NetworkClient() {
-        mCallBack = new HashMap<>();
 
+    private final String mHeaderContentType = "Content-Type";
+    private final String mContentType = "application/json";
+
+    private String mApiUrl;
+
+    private Api mApi;
+
+    public NetworkClient()throws Exception {
+        mCallBack = new HashMap<>();
+        initializeNetworkClient();
+    }
+
+    private void initializeNetworkClient() throws Exception {
+
+        mApiUrl = "http://192.168.0.94:3000/";
+
+        if (initializeApiReference())
+            throw new Exception("Api initialization error");
+    }
+
+
+    private boolean initializeApiReference() {
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(mApiUrl);
+        Retrofit retrofit = builder.build();
+        mApi = retrofit.create(Api.class);
+        return mApi == null;
     }
 
     public void updateMachineWork() {
@@ -124,7 +145,7 @@ public class NetworkClient {
     }
 
     public void addMachine(DefaultMachine machDef, final User user) {
-        try (Realm it = Realm.getDefaultInstance()) {
+     /*   try (Realm it = Realm.getDefaultInstance()) {
             final Machine mach = new Machine();
             mach.setId(UUID.randomUUID().toString());
             mach.setName(machDef.getName());
@@ -179,11 +200,11 @@ public class NetworkClient {
                             }
                         }
                     });
-        }
+        }*/
     }
 
     public void addWorker(final Worker worker, final User user) {
-        getUserDocumentReferenc()
+   /*     getUserDocumentReferenc()
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -213,11 +234,11 @@ public class NetworkClient {
                             }
                         }
                     }
-                });
+                });*/
     }
 
     public void addWorkerToMachine(Machine machine, Worker worker) {
-        WriteBatch batch = getBaseRef().batch();
+    /*    WriteBatch batch = getBaseRef().batch();
         DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
                 .document(machine.getId());
         batch.update(sfRef, "workerId", worker.getId());
@@ -226,11 +247,11 @@ public class NetworkClient {
             public void onComplete(@NonNull Task<Void> task) {
                 Log.i("usern", "Updated Machine");
             }
-        });
+        });*/
     }
 
     public void removeWorkerToMachine(Machine machine) {
-        WriteBatch batch = getBaseRef().batch();
+   /*     WriteBatch batch = getBaseRef().batch();
         DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
                 .document(machine.getId());
         batch.update(sfRef, "workerId", null);
@@ -239,11 +260,11 @@ public class NetworkClient {
             public void onComplete(@NonNull Task<Void> task) {
                 Log.i("usern", "Updated Machine");
             }
-        });
+        });*/
     }
 
     public void setTimeOutOfAppForUser(Long time) {
-        WriteBatch batch = getBaseRef().batch();
+   /*     WriteBatch batch = getBaseRef().batch();
         DocumentReference sfRef = getUserDocumentReferenc();
         batch.update(sfRef, "timeOutOfApp", time);
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -251,11 +272,11 @@ public class NetworkClient {
             public void onComplete(@NonNull Task<Void> task) {
                 Log.i("usern", "updated time");
             }
-        });
+        });*/
     }
 
     public void setLastPayment(Long lastPayment) {
-        WriteBatch batch = getBaseRef().batch();
+     /*   WriteBatch batch = getBaseRef().batch();
         DocumentReference sfRef = getUserDocumentReferenc();
         batch.update(sfRef, "lastPayment", lastPayment);
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -263,7 +284,7 @@ public class NetworkClient {
             public void onComplete(@NonNull Task<Void> task) {
                 Log.i("usern", "updated time");
             }
-        });
+        });*/
     }
 
     public void parseAllComponents() {
@@ -286,7 +307,7 @@ public class NetworkClient {
     }
 
     private void updateBackground() {
-        try (Realm realm = Realm.getDefaultInstance()) {
+     /*   try (Realm realm = Realm.getDefaultInstance()) {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser userFire = mAuth.getCurrentUser();
             final User user = realm.where(User.class).equalTo("idUser", userFire.getUid()).findFirst();
@@ -334,11 +355,30 @@ public class NetworkClient {
                 }
                 mCallBack.get(UPDATE).addOnSucsses(UPDATE);
             }
-        }
+        }*/
     }
 
     public void parseDefaultMachines() {
-        QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getDefaultMachinePath())
+      /*  mApi.getMachines().enqueue(new ApiCallback<List<Machine>>() {
+            @Override
+            public void onSuccess(Call<List<Machine>> call, Response<List<Machine>> response) {
+
+            }
+
+
+            @Override
+            public void onFailure(Call<List<Machine>> call, Throwable t) {
+                super.onFailure(call, t);
+            }
+        });*/
+        try {
+            Response<List<Machine>> machines = mApi.getMachines().execute();
+            Log.i("usern", machines.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+       /* QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getDefaultMachinePath())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -362,11 +402,11 @@ public class NetworkClient {
                             mCallBack.get(COMPONENTS).addOnSucsses(DEFAULT_MACHINE);
                         }
                     }
-                });
+                });*/
     }
 
     public void parseUsersMachines() {
-        QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
+     /*   QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
                 .whereEqualTo("userId", getFirebaseUser().getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -390,11 +430,11 @@ public class NetworkClient {
                             mCallBack.get(COMPONENTS).addOnSucsses(USERS_MACHINE);
                         }
                     }
-                });
+                });*/
     }
 
     public void parseMaterials() {
-        QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getMaterialPath())
+     /*   QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getMaterialPath())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -415,11 +455,11 @@ public class NetworkClient {
                             mCallBack.get(COMPONENTS).addOnSucsses(MATERIAL);
                         }
                     }
-                });
+                });*/
     }
 
     public void parseWorkers() {
-        QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getWorkersPath())
+      /*  QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getWorkersPath())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -442,11 +482,11 @@ public class NetworkClient {
                             mCallBack.get(COMPONENTS).addOnSucsses(WORKERS);
                         }
                     }
-                });
+                });*/
     }
 
     public void parseUser() {
-        final DocumentReference userRef = getUserDocumentReferenc();
+      /*  final DocumentReference userRef = getUserDocumentReferenc();
         userRef.get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -483,12 +523,12 @@ public class NetworkClient {
 
                         }
                     }
-                });
+                });*/
 
     }
 
     public void composeMachineWorker() {
-        QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
+      /*  QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
                 .whereEqualTo("userId", getFirebaseUser().getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -512,11 +552,11 @@ public class NetworkClient {
                             mCallBack.get(COMPOSERS).addOnSucsses(USERS_MACHINE);
                         }
                     }
-                });
+                });*/
     }
 
     public void composeUserMachine() {
-        final DocumentReference userRef = getUserDocumentReferenc();
+     /*   final DocumentReference userRef = getUserDocumentReferenc();
         userRef.get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -551,12 +591,12 @@ public class NetworkClient {
                             }
                         }
                     }
-                });
+                });*/
 
     }
 
     public void composeUserMaterials() {
-        final DocumentReference userRef = getUserDocumentReferenc();
+     /*   final DocumentReference userRef = getUserDocumentReferenc();
         userRef.collection(getMaterialPath())
                 .get()
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
@@ -585,12 +625,12 @@ public class NetworkClient {
                             mCallBack.get(COMPOSERS).addOnSucsses(MATERIAL);
                         }
                     }
-                });
+                });*/
 
     }
 
     public void composeUserWorkers() {
-        final DocumentReference userRef = getUserDocumentReferenc();
+      /*  final DocumentReference userRef = getUserDocumentReferenc();
         userRef.get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
@@ -633,7 +673,7 @@ public class NetworkClient {
                             }
                         }
                     }
-                });
+                });*/
 
     }
 }
