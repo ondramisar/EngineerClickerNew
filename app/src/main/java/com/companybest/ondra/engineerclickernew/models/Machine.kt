@@ -13,4 +13,5 @@ open class Machine : RealmObject() {
     var numberOfMaterialsToGive: Int = 0
     var lvl: Int = 0
     var worker: Worker? = null
+    var workerId: String = ""
 }

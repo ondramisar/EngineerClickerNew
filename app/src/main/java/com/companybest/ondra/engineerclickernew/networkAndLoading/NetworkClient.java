@@ -53,14 +53,14 @@ public class NetworkClient {
 
     private Api mApi;
 
-    public NetworkClient()throws Exception {
+    public NetworkClient() throws Exception {
         mCallBack = new HashMap<>();
         initializeNetworkClient();
     }
 
     private void initializeNetworkClient() throws Exception {
 
-        mApiUrl = "http://192.168.0.94:3000/";
+        mApiUrl = "https://fluffy-fox-project.appspot.com/";
 
         if (initializeApiReference())
             throw new Exception("Api initialization error");
@@ -371,118 +371,47 @@ public class NetworkClient {
                 super.onFailure(call, t);
             }
         });*/
-        try {
-            Response<List<Machine>> machines = mApi.getMachines().execute();
-            Log.i("usern", machines.toString());
-
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> realm.delete(DefaultMachine.class));
+            Response<List<DefaultMachine>> machines = mApi.getMachines().execute();
+            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(machines.body()));
+            mCallBack.get(COMPONENTS).addOnSucsses(DEFAULT_MACHINE);
         } catch (IOException e) {
             e.printStackTrace();
         }
-       /* QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getDefaultMachinePath())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            try (Realm mRealm = Realm.getDefaultInstance()) {
-                                mRealm.beginTransaction();
-                                for (DocumentSnapshot single : task.getResult()) {
-                                    DefaultMachine m = new DefaultMachine();
-                                    m.setId(single.getId());
-                                    m.setName((java.lang.String) single.get("name"));
-                                    m.setTimeToReach(single.getLong("timeToReach").intValue());
-                                    m.setIdMaterialToGive(single.getString("idMaterialToGive"));
-                                    m.setNumberOfMaterialsToGive(single.getLong("numberOfMaterialsToGive").intValue());
-                                    m.setCost(single.getLong("cost").intValue());
-
-                                    mRealm.copyToRealmOrUpdate(m);
-                                }
-                                mRealm.commitTransaction();
-                            }
-                            mCallBack.get(COMPONENTS).addOnSucsses(DEFAULT_MACHINE);
-                        }
-                    }
-                });*/
     }
 
     public void parseUsersMachines() {
-     /*   QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
-                .whereEqualTo("userId", getFirebaseUser().getUid())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            try (Realm mRealm = Realm.getDefaultInstance()) {
-                                mRealm.beginTransaction();
-                                for (DocumentSnapshot single : task.getResult()) {
-                                    Machine m = new Machine();
-                                    m.setId(single.getId());
-                                    m.setName((java.lang.String) single.get("name"));
-                                    m.setTimeToReach(single.getLong("timeToReach").intValue());
-                                    m.setIdMaterialToGive(single.getString("idMaterialToGive"));
-                                    m.setNumberOfMaterialsToGive(single.getLong("numberOfMaterialsToGive").intValue());
-
-                                    mRealm.copyToRealmOrUpdate(m);
-                                }
-                                mRealm.commitTransaction();
-                            }
-                            mCallBack.get(COMPONENTS).addOnSucsses(USERS_MACHINE);
-                        }
-                    }
-                });*/
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> realm.delete(Machine.class));
+            Response<List<Machine>> machines = mApi.getUserMachines().execute();
+            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(machines.body()));
+            mCallBack.get(COMPONENTS).addOnSucsses(USERS_MACHINE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void parseMaterials() {
-     /*   QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getMaterialPath())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            try (Realm mRealm = Realm.getDefaultInstance()) {
-                                mRealm.beginTransaction();
-                                for (DocumentSnapshot single : task.getResult()) {
-                                    Material m = new Material();
-                                    m.setId(single.getId());
-                                    m.setValue(single.getLong("value").intValue());
-                                    m.setName(single.getString("name"));
-
-                                    mRealm.copyToRealmOrUpdate(m);
-                                }
-                                mRealm.commitTransaction();
-                            }
-                            mCallBack.get(COMPONENTS).addOnSucsses(MATERIAL);
-                        }
-                    }
-                });*/
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> realm.delete(Material.class));
+            Response<List<Material>> materials = mApi.getMaterials().execute();
+            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(materials.body()));
+            mCallBack.get(COMPONENTS).addOnSucsses(MATERIAL);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void parseWorkers() {
-      /*  QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getWorkersPath())
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            try (Realm mRealm = Realm.getDefaultInstance()) {
-                                mRealm.beginTransaction();
-                                for (DocumentSnapshot single : task.getResult()) {
-                                    Worker worker = new Worker();
-                                    worker.setId(single.getId());
-                                    worker.setName(single.getString("name"));
-                                    worker.setMaterialMultiplayer(single.getLong("materialMultiplayer").intValue());
-                                    worker.setTimeCutBy(single.getLong("timeCutBy").floatValue());
-                                    worker.setPayment(single.getLong("payment").intValue());
-
-                                    mRealm.copyToRealmOrUpdate(worker);
-                                }
-                                mRealm.commitTransaction();
-                            }
-                            mCallBack.get(COMPONENTS).addOnSucsses(WORKERS);
-                        }
-                    }
-                });*/
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> realm.delete(Worker.class));
+            Response<List<Worker>> workers = mApi.getWorkers().execute();
+            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(workers.body()));
+            mCallBack.get(COMPONENTS).addOnSucsses(WORKERS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void parseUser() {
