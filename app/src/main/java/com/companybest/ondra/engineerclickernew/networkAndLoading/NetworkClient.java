@@ -1,35 +1,33 @@
 package com.companybest.ondra.engineerclickernew.networkAndLoading;
 
 
-import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.companybest.ondra.engineerclickernew.firebasePostModels.UserPost;
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine;
-import com.companybest.ondra.engineerclickernew.models.Machine;
-import com.companybest.ondra.engineerclickernew.models.Material;
+import com.companybest.ondra.engineerclickernew.models.DefaultMaterial;
+import com.companybest.ondra.engineerclickernew.models.DefaultWorker;
 import com.companybest.ondra.engineerclickernew.models.User;
-import com.companybest.ondra.engineerclickernew.models.Worker;
+import com.companybest.ondra.engineerclickernew.models.UserMachine;
+import com.companybest.ondra.engineerclickernew.models.UserMaterial;
+import com.companybest.ondra.engineerclickernew.models.UserWorker;
 import com.companybest.ondra.engineerclickernew.utilities.CallBackFirebase;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.WriteBatch;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import io.realm.Realm;
-import io.realm.RealmList;
+import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getBaseRef;
-import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getMaterialPath;
-import static com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt.getUserDocumentReferenc;
 
 public class NetworkClient {
 
@@ -77,15 +75,15 @@ public class NetworkClient {
     }
 
     public void updateMachineWork() {
-        try (Realm realm = Realm.getDefaultInstance()) {
+    /*    try (Realm realm = Realm.getDefaultInstance()) {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser userFire = mAuth.getCurrentUser();
             if (userFire != null) {
                 final User user = realm.where(User.class).equalTo("idUser", userFire.getUid()).findFirst();
                 if (user != null) {
-                    RealmList<Machine> machines = user.getMachines();
+                    RealmList<UserMachine> machines = user.getUserMachines();
                     if (machines != null) {
-                        for (final Machine machine : machines) {
+                        for (final UserMachine machine : machines) {
                             if (machine.getWorker() != null) {
                                 if (machine.getTimeBeffore() == 0L) {
                                     realm.executeTransaction(new Realm.Transaction() {
@@ -101,7 +99,7 @@ public class NetworkClient {
                                             @Override
                                             public void execute(Realm realm) {
                                                 machine.setTimeBeffore(System.currentTimeMillis() / 1000);
-                                                Material mat = realm.where(Material.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
+                                                DefaultMaterial mat = realm.where(DefaultMaterial.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
 
                                                 if (mat != null) {
                                                     WriteBatch batch = getBaseRef().batch();
@@ -109,7 +107,7 @@ public class NetworkClient {
                                                             .collection(getMaterialPath())
                                                             .document(mat.getId());
 
-                                                    if (!user.getMaterials().contains(mat)) {
+                                                    if (!user.getDefaultMaterials().contains(mat)) {
                                                         mat.setNumberOf(machine.getNumberOfMaterialsToGive() * machine.getWorker().getMaterialMultiplayer());
                                                         user.addMaterial(mat);
 
@@ -117,7 +115,7 @@ public class NetworkClient {
 
 
                                                     } else {
-                                                        Material material = user.getMaterials().where().equalTo("id", machine.getIdMaterialToGive()).findFirst();
+                                                        DefaultMaterial material = user.getDefaultMaterials().where().equalTo("id", machine.getIdMaterialToGive()).findFirst();
                                                         if (material != null) {
                                                             material.setNumberOf(material.getNumberOf() + (machine.getNumberOfMaterialsToGive() * machine.getWorker().getMaterialMultiplayer()));
 
@@ -141,12 +139,12 @@ public class NetworkClient {
                     }
                 }
             }
-        }
+        }*/
     }
 
     public void addMachine(DefaultMachine machDef, final User user) {
      /*   try (Realm it = Realm.getDefaultInstance()) {
-            final Machine mach = new Machine();
+            final UserMachine mach = new UserMachine();
             mach.setId(UUID.randomUUID().toString());
             mach.setName(machDef.getName());
             mach.setTimeToReach(machDef.getTimeToReach());
@@ -157,7 +155,7 @@ public class NetworkClient {
             it.copyToRealmOrUpdate(mach);
             it.commitTransaction();
 
-            final Machine mechTest = it.where(Machine.class).equalTo("id", mach.getId()).findFirst();
+            final UserMachine mechTest = it.where(UserMachine.class).equalTo("id", mach.getId()).findFirst();
             if (mechTest != null) {
                 it.executeTransaction(new Realm.Transaction() {
                     @Override
@@ -203,7 +201,7 @@ public class NetworkClient {
         }*/
     }
 
-    public void addWorker(final Worker worker, final User user) {
+    public void addWorker(final DefaultWorker defaultWorker, final User user) {
    /*     getUserDocumentReferenc()
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -216,14 +214,14 @@ public class NetworkClient {
                                 ArrayList<String> newData = new ArrayList<>();
                                 if (oldData != null)
                                     newData.addAll(oldData);
-                                if (!worker.getId().isEmpty()) {
-                                    newData.add(worker.getId());
+                                if (!defaultWorker.getId().isEmpty()) {
+                                    newData.add(defaultWorker.getId());
                                     try (Realm realm = Realm.getDefaultInstance()) {
                                         realm.executeTransaction(new Realm.Transaction() {
                                             @Override
                                             public void execute(Realm realm) {
-                                                user.addWorker(worker);
-                                                worker.setBought(true);
+                                                user.addWorker(defaultWorker);
+                                                defaultWorker.setBought(true);
                                             }
                                         });
                                     }
@@ -237,28 +235,28 @@ public class NetworkClient {
                 });*/
     }
 
-    public void addWorkerToMachine(Machine machine, Worker worker) {
+    public void addWorkerToMachine(UserMachine userMachine, DefaultWorker defaultWorker) {
     /*    WriteBatch batch = getBaseRef().batch();
         DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
-                .document(machine.getId());
-        batch.update(sfRef, "workerId", worker.getId());
+                .document(userMachine.getId());
+        batch.update(sfRef, "workerId", defaultWorker.getId());
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Log.i("usern", "Updated Machine");
+                Log.i("usern", "Updated UserMachine");
             }
         });*/
     }
 
-    public void removeWorkerToMachine(Machine machine) {
+    public void removeWorkerToMachine(UserMachine userMachine) {
    /*     WriteBatch batch = getBaseRef().batch();
         DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
-                .document(machine.getId());
+                .document(userMachine.getId());
         batch.update(sfRef, "workerId", null);
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
-                Log.i("usern", "Updated Machine");
+                Log.i("usern", "Updated UserMachine");
             }
         });*/
     }
@@ -287,11 +285,40 @@ public class NetworkClient {
         });*/
     }
 
+    public void createUser(FirebaseUser user) {
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> realm.delete(User.class));
+            mApi.postUser(new UserPost(user.getUid(),"", user.getEmail(), 0, 0L, 0L, 0L)).enqueue(new ApiCallback<String>() {
+                @Override
+                public void onSuccess(Call<String> call, Response<String> response) {
+                    Log.i("usern", response.body());
+                }
+            });
+           /* Response<String> responce = handleNetworkOnMainThread(() ->
+                            mApi.postUser(new UserPost(user.getUid(),"", user.getEmail(), 0, 0L, 0L, 0L)).execute());*/
+        }
+    }
+
+    public <T> T handleNetworkOnMainThread(final Callable<T> callable) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<T> futureCart = executor.submit(callable);
+        T object = null;
+        try {
+            object = futureCart.get();
+        } catch (Exception e) {
+        //    Development.debugLog(TAG, e.getMessage());
+            e.printStackTrace();
+        }
+        return object;
+    }
+
     public void parseAllComponents() {
         parseDefaultMachines();
-        parseMaterials();
+        parseDefaultMaterials();
+        parseDefaultWorkers();
         parseUser();
-        parseWorkers();
+        parseUserWorkers();
+        parseUserMaterials();
         parseUsersMachines();
     }
 
@@ -315,16 +342,16 @@ public class NetworkClient {
                 Long time = user.getLastTimeOutOfApp();
                 Long timeNow = System.currentTimeMillis();
                 Long difTime = (timeNow - time) / 1000;
-                for (final Machine machine : user.getMachines()) {
+                for (final UserMachine machine : user.getUserMachines()) {
                     if (machine.getWorker() != null) {
                         final Long machTime = difTime / machine.getTimeToReach();
-                        final Material material = realm.where(Material.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
-                        if (user.getMaterials().contains(material) && material != null) {
+                        final DefaultMaterial material = realm.where(DefaultMaterial.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
+                        if (user.getDefaultMaterials().contains(material) && material != null) {
                             realm.executeTransaction(new Realm.Transaction() {
                                 @Override
                                 public void execute(Realm realm) {
                                     //       material.setNumberOf(material.getNumberOf() + machTime.intValue());
-                                    user.getMaterials().where().equalTo("id", material.getId()).findFirst().setNumberOf(material.getNumberOf() + machTime.intValue());
+                                    user.getDefaultMaterials().where().equalTo("id", material.getId()).findFirst().setNumberOf(material.getNumberOf() + machTime.intValue());
                                 }
                             });
                         }
@@ -345,7 +372,7 @@ public class NetworkClient {
                     realm.executeTransaction(new Realm.Transaction() {
                         @Override
                         public void execute(Realm realm) {
-                            for (Worker worker : user.getWorkers()) {
+                            for (DefaultWorker worker : user.getUserWorkers()) {
                                 user.setCoins(user.getCoins() - (worker.getPayment() * difference));
                             }
                             user.setLastPayment(System.currentTimeMillis());
@@ -359,23 +386,11 @@ public class NetworkClient {
     }
 
     public void parseDefaultMachines() {
-      /*  mApi.getMachines().enqueue(new ApiCallback<List<Machine>>() {
-            @Override
-            public void onSuccess(Call<List<Machine>> call, Response<List<Machine>> response) {
-
-            }
-
-
-            @Override
-            public void onFailure(Call<List<Machine>> call, Throwable t) {
-                super.onFailure(call, t);
-            }
-        });*/
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(realm1 -> realm.delete(DefaultMachine.class));
             Response<List<DefaultMachine>> machines = mApi.getMachines().execute();
             realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(machines.body()));
-            mCallBack.get(COMPONENTS).addOnSucsses(DEFAULT_MACHINE);
+          //  mCallBack.get(COMPONENTS).addOnSucsses(DEFAULT_MACHINE);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -383,77 +398,73 @@ public class NetworkClient {
 
     public void parseUsersMachines() {
         try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(realm1 -> realm.delete(Machine.class));
-            Response<List<Machine>> machines = mApi.getUserMachines().execute();
+            realm.executeTransaction(realm1 -> realm.delete(UserMachine.class));
+            FirebaseUser userFir = FirebaseAuth.getInstance().getCurrentUser();
+            Response<List<UserMachine>> machines = mApi.getUserMachines("userMachines/" + userFir.getUid()).execute();
             realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(machines.body()));
-            mCallBack.get(COMPONENTS).addOnSucsses(USERS_MACHINE);
+          //  mCallBack.get(COMPONENTS).addOnSucsses(USERS_MACHINE);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void parseMaterials() {
+    public void parseDefaultMaterials() {
         try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(realm1 -> realm.delete(Material.class));
-            Response<List<Material>> materials = mApi.getMaterials().execute();
+            realm.executeTransaction(realm1 -> realm.delete(DefaultMaterial.class));
+            Response<List<DefaultMaterial>> materials = mApi.getDefaultMaterials().execute();
             realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(materials.body()));
-            mCallBack.get(COMPONENTS).addOnSucsses(MATERIAL);
+           // mCallBack.get(COMPONENTS).addOnSucsses(MATERIAL);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void parseWorkers() {
+    public void parseUserMaterials() {
         try (Realm realm = Realm.getDefaultInstance()) {
-            realm.executeTransaction(realm1 -> realm.delete(Worker.class));
-            Response<List<Worker>> workers = mApi.getWorkers().execute();
-            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(workers.body()));
-            mCallBack.get(COMPONENTS).addOnSucsses(WORKERS);
+            realm.executeTransaction(realm1 -> realm.delete(DefaultMaterial.class));
+            FirebaseUser userFir = FirebaseAuth.getInstance().getCurrentUser();
+            Response<List<UserMaterial>> materials = mApi.getUserMaterials("userMaterials/" + userFir.getUid()).execute();
+            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(materials.body()));
+          //  mCallBack.get(COMPONENTS).addOnSucsses(MATERIAL);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    public void parseDefaultWorkers() {
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> realm.delete(DefaultWorker.class));
+            Response<List<DefaultWorker>> workers = mApi.getDefaultWorkers().execute();
+            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(workers.body()));
+          //  mCallBack.get(COMPONENTS).addOnSucsses(WORKERS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void parseUserWorkers() {
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> realm.delete(DefaultWorker.class));
+            FirebaseUser userFir = FirebaseAuth.getInstance().getCurrentUser();
+            Response<List<UserWorker>> workers = mApi.getUserWorkers("userWorkers/" + userFir.getUid()).execute();
+            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(workers.body()));
+         //   mCallBack.get(COMPONENTS).addOnSucsses(WORKERS);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void parseUser() {
-      /*  final DocumentReference userRef = getUserDocumentReferenc();
-        userRef.get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        try (Realm mRealm = Realm.getDefaultInstance()) {
-                            if (task.isSuccessful()) {
-                                final DocumentSnapshot document = task.getResult();
-
-                                mRealm.executeTransaction(new Realm.Transaction() {
-                                    @Override
-                                    public void execute(final Realm realm) {
-                                        realm.delete(User.class);
-                                        final User userRealm = new User();
-                                        userRealm.setIdUser(document.getId());
-
-                                        if (document.getString("username") != null)
-                                            if (!document.getString("username").isEmpty())
-                                                userRealm.setName(document.getString("username"));
-                                        if (document.getString("email") != null)
-                                            if (!document.getString("email").isEmpty())
-                                                userRealm.setEmail(document.getString("email"));
-                                        if (document.getLong("timeOutOfApp") != null)
-                                            userRealm.setLastTimeOutOfApp(document.getLong("timeOutOfApp"));
-                                        if (document.getLong("lastPayment") != null)
-                                            userRealm.setLastPayment(document.getLong("lastPayment"));
-
-
-                                        realm.copyToRealmOrUpdate(userRealm);
-
-                                        mCallBack.get(COMPONENTS).addOnSucsses(USER);
-                                    }
-                                });
-                            }
-
-                        }
-                    }
-                });*/
-
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> realm.delete(DefaultWorker.class));
+            FirebaseUser userFir = FirebaseAuth.getInstance().getCurrentUser();
+            Response<User> user = mApi.getUser("user/" + userFir.getUid()).execute();
+            realm.executeTransaction(realm1 -> realm1.copyToRealmOrUpdate(user.body()));
+          //  mCallBack.get(COMPONENTS).addOnSucsses(USER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void composeMachineWorker() {
@@ -467,9 +478,9 @@ public class NetworkClient {
                             try (Realm mRealm = Realm.getDefaultInstance()) {
                                 mRealm.beginTransaction();
                                 for (DocumentSnapshot single : task.getResult()) {
-                                    Machine machine = mRealm.where(Machine.class).equalTo("id", single.getId()).findFirst();
+                                    UserMachine machine = mRealm.where(UserMachine.class).equalTo("id", single.getId()).findFirst();
                                     if (single.getString("workerId") != null) {
-                                        Worker worker = mRealm.where(Worker.class).equalTo("id", single.getString("workerId")).findFirst();
+                                        DefaultWorker worker = mRealm.where(DefaultWorker.class).equalTo("id", single.getString("workerId")).findFirst();
                                         if (worker != null && machine != null) {
                                             worker.setOnMachine(true);
                                             machine.setWorker(worker);
@@ -504,9 +515,9 @@ public class NetworkClient {
                                                 for (Object i : machiens) {
                                                     if (i instanceof String) {
                                                         String id = (String) i;
-                                                        Machine machine = realm.where(Machine.class).equalTo("id", id).findFirst();
+                                                        UserMachine machine = realm.where(UserMachine.class).equalTo("id", id).findFirst();
 
-                                                        if (machine != null && !userRealm.getMachines().contains(machine))
+                                                        if (machine != null && !userRealm.getUserMachines().contains(machine))
                                                             userRealm.addMachine(machine);
 
                                                     }
@@ -535,14 +546,14 @@ public class NetworkClient {
                             final User userRealm = realm.where(User.class).equalTo("idUser", userRef.getId()).findFirst();
 
                             for (final DocumentSnapshot single : documentSnapshots.getDocuments()) {
-                                final Material material = realm.where(Material.class).equalTo("id", single.getId()).findFirst();
+                                final DefaultMaterial material = realm.where(DefaultMaterial.class).equalTo("id", single.getId()).findFirst();
 
                                 realm.executeTransaction(new Realm.Transaction() {
                                     @Override
                                     public void execute(Realm realm) {
                                         material.setNumberOf(single.getLong("numberOf").intValue());
 
-                                        if (!userRealm.getMaterials().contains(material))
+                                        if (!userRealm.getDefaultMaterials().contains(material))
                                             userRealm.addMaterial(material);
 
                                         realm.copyToRealmOrUpdate(userRealm);
@@ -578,8 +589,8 @@ public class NetworkClient {
                                                 for (Object i : workers) {
                                                     if (i instanceof String) {
                                                         String id = (String) i;
-                                                        Worker worker = realm.where(Worker.class).equalTo("id", id).findFirst();
-                                                        if (userRealm != null && worker != null && !userRealm.getWorkers().contains(worker)) {
+                                                        DefaultWorker worker = realm.where(DefaultWorker.class).equalTo("id", id).findFirst();
+                                                        if (userRealm != null && worker != null && !userRealm.getUserWorkers().contains(worker)) {
                                                             worker.setBought(true);
                                                             userRealm.addWorker(worker);
                                                         }
@@ -588,7 +599,7 @@ public class NetworkClient {
                                             }
 
                                             if (userRealm != null && userRealm.getLastPayment() == null) {
-                                                for (Worker worker : userRealm.getWorkers()) {
+                                                for (DefaultWorker worker : userRealm.getUserWorkers()) {
                                                     userRealm.setCoins(userRealm.getCoins() - worker.getPayment());
                                                 }
                                                 userRealm.setLastPayment(System.currentTimeMillis());

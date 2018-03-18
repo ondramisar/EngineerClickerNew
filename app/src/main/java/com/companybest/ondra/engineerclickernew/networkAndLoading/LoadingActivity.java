@@ -22,9 +22,13 @@ public class LoadingActivity extends AppCompatActivity {
         try {
             final NetworkClient networkClient = new NetworkClient();
             networkClient.parseDefaultMachines();
-            networkClient.parseWorkers();
-            networkClient.parseMaterials();
+            networkClient.parseDefaultWorkers();
+            networkClient.parseDefaultMaterials();
+            networkClient.parseUser();
             networkClient.parseUsersMachines();
+            networkClient.parseUserMaterials();
+            networkClient.parseUserWorkers();
+            //networkClient.parseUsersMachines();
         } catch (Exception e) {
             e.printStackTrace();
         }

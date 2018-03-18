@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.companybest.ondra.engineerclickernew.R
 import com.companybest.ondra.engineerclickernew.adapters.BasicAdapterForAll
-import com.companybest.ondra.engineerclickernew.models.Worker
+import com.companybest.ondra.engineerclickernew.models.DefaultWorker
 import io.realm.Realm
 import io.realm.RealmList
 import io.realm.RealmModel
@@ -34,7 +34,7 @@ class WorkersBuyFragment : Fragment() {
         val view = inflater!!.inflate(R.layout.workers_buy_fragment, container, false)
         val realm = Realm.getDefaultInstance()
         val dataRealm = RealmList<RealmModel>()
-        val workers: RealmResults<Worker> = realm.where(Worker::class.java).findAll()
+        val workers: RealmResults<DefaultWorker> = realm.where(DefaultWorker::class.java).findAll()
         dataRealm.addAll(workers)
 
         val adapter = BasicAdapterForAll(dataRealm)

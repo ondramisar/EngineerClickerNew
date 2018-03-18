@@ -47,7 +47,7 @@ class MachineFragment : Fragment() {
             val user = realm.where(User::class.java).equalTo("idUser", userFire?.uid).findFirst()
 
             if (user != null) {
-                dataRealm.addAll(user.machines)
+                dataRealm.addAll(user.userMachines)
             }
         } else if (type == defaultMachineType) {
             val defaultMachine = realm.where(DefaultMachine::class.java).findAll()

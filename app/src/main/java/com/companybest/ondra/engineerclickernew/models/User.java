@@ -1,5 +1,7 @@
 package com.companybest.ondra.engineerclickernew.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -14,14 +16,17 @@ public class User extends RealmObject {
     private Long lastUpdateMaterial;
     private Long lastTimeOutOfApp;
     private Long lastPayment;
-    private RealmList<Machine> machines;
-    private RealmList<Material> mMaterials;
-    private RealmList<Worker> mWorkers;
+    @JsonIgnore
+    private RealmList<UserMachine> mUserMachines;
+    @JsonIgnore
+    private RealmList<UserMaterial> materials;
+    @JsonIgnore
+    private RealmList<UserWorker> userWorkers;
 
     public User() {
-        machines = new RealmList<>();
-        mMaterials = new RealmList<>();
-        mWorkers = new RealmList<>();
+        mUserMachines = new RealmList<>();
+        materials = new RealmList<>();
+        userWorkers = new RealmList<>();
     }
 
     public String getIdUser() {
@@ -80,39 +85,39 @@ public class User extends RealmObject {
         this.lastPayment = lastPayment;
     }
 
-    public RealmList<Machine> getMachines() {
-        return machines;
+    public RealmList<UserMachine> getUserMachines() {
+        return mUserMachines;
     }
 
-    public void setMachines(RealmList<Machine> machines) {
-        this.machines = machines;
+    public void setUserMachines(RealmList<UserMachine> userMachines) {
+        this.mUserMachines = userMachines;
     }
 
-    public void addMachine(Machine m) {
-        machines.add(m);
+    public void addMachine(UserMachine m) {
+        mUserMachines.add(m);
     }
 
-    public RealmList<Material> getMaterials() {
-        return mMaterials;
+    public RealmList<UserMaterial> getMaterials() {
+        return materials;
     }
 
-    public void setMaterials(RealmList<Material> materials) {
-        mMaterials = materials;
+    public void setMaterials(RealmList<UserMaterial> materials) {
+        this.materials = materials;
     }
 
-    public void addMaterial(Material material) {
-        mMaterials.add(material);
+    public void addMaterial(UserMaterial material) {
+        materials.add(material);
     }
 
-    public RealmList<Worker> getWorkers() {
-        return mWorkers;
+    public RealmList<UserWorker> getUserWorkers() {
+        return userWorkers;
     }
 
-    public void setWorkers(RealmList<Worker> workers) {
-        mWorkers = workers;
+    public void setUserWorkers(RealmList<UserWorker> userWorkers) {
+        this.userWorkers = userWorkers;
     }
 
-    public void addWorker(Worker worker) {
-        mWorkers.add(worker);
+    public void addWorker(UserWorker defaultWorker) {
+        userWorkers.add(defaultWorker);
     }
 }

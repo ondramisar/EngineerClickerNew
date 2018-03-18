@@ -17,18 +17,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.companybest.ondra.engineerclickernew.networkAndLoading.LoadingActivity;
 import com.companybest.ondra.engineerclickernew.R;
-import com.companybest.ondra.engineerclickernew.firebasePostModels.UserPost;
-import com.companybest.ondra.engineerclickernew.utilities.QueryFirebaseUtilitiesKt;
+import com.companybest.ondra.engineerclickernew.networkAndLoading.LoadingActivity;
+import com.companybest.ondra.engineerclickernew.networkAndLoading.NetworkClient;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegisterFragment extends Fragment {
 
@@ -127,7 +123,7 @@ public class RegisterFragment extends Fragment {
 
                                         if (user != null) {
 
-                                            FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                         /*   FirebaseFirestore db = FirebaseFirestore.getInstance();
                                             db.collection(QueryFirebaseUtilitiesKt.getUsersPath()).document(user.getUid())
                                                     .set(new UserPost( user.getDisplayName(), user.getEmail()))
                                                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -142,7 +138,15 @@ public class RegisterFragment extends Fragment {
                                                         public void onFailure(@NonNull Exception e) {
 
                                                         }
-                                                    });
+                                                    });*/
+                                            try {
+                                                NetworkClient networkClient = new NetworkClient();
+                                                networkClient.createUser(user);
+                                                Intent i = new Intent(getContext(), LoadingActivity.class);
+                                                startActivity(i);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
 
                                         }
                                     } else {
