@@ -10,5 +10,5 @@ open class UserMaterial : RealmObject() {
     var value: Int = 0
     var numberOf: Int = 0
     var name: String = ""
-    var userId: String = ""
+    var idUser: String = ""
 }

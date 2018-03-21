@@ -18,7 +18,7 @@ class DefaultMachineViewHolder(itemView: View) : GenericViewHolder(itemView) {
         val mach = data as DefaultMachine
         itemView.default_machine_name.text = mach.name
         val mat = Realm.getDefaultInstance().where(DefaultMaterial::class.java).equalTo("id", mach.idMaterialToGive).findFirst()
-        itemView.default_machine_material.text = "MATERIAL: " + mat?.name
+        itemView.default_machine_material.text = "DEFAULT_MATERIAL: " + mat?.name
         itemView.default_machine_time.text = "TIME: " + mach.timeToReach
         itemView.default_machine_cost.text = "COST: " + mach.cost.toString()
         itemView.default_machine_buy_btn.setOnClickListener({

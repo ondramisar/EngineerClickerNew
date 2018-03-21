@@ -13,5 +13,5 @@ open class UserWorker : RealmObject() {
     var payment: Int = 0
     var isOnMachine: Boolean = false
     var lvl: Int = 0
-    var userId: String = ""
+    var idUser: String = ""
 }

@@ -1,11 +1,12 @@
 package com.companybest.ondra.engineerclickernew.networkAndLoading;
 
+import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMachine;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.UserPost;
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine;
 import com.companybest.ondra.engineerclickernew.models.DefaultMaterial;
 import com.companybest.ondra.engineerclickernew.models.DefaultWorker;
-import com.companybest.ondra.engineerclickernew.models.UserMachine;
 import com.companybest.ondra.engineerclickernew.models.User;
+import com.companybest.ondra.engineerclickernew.models.UserMachine;
 import com.companybest.ondra.engineerclickernew.models.UserMaterial;
 import com.companybest.ondra.engineerclickernew.models.UserWorker;
 
@@ -14,7 +15,6 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Url;
 
@@ -25,6 +25,9 @@ public interface Api {
 
     @GET
     Call<List<UserMachine>> getUserMachines(@Url String url);
+
+    @POST("createMachine")
+    Call<String> createUserMachines(@Body PostMachine machine);
 
     @GET("defaultWorkers")
     Call<List<DefaultWorker>> getDefaultWorkers();
@@ -44,10 +47,6 @@ public interface Api {
     @POST("user")
     Call<String> postUser(@Body UserPost userPost);
 
-
-
-    @POST("mobile-protocol-v2/contacts/message")
-    @Headers("Content-Type: application/json")
-    Call<DefaultMachine> feedback(@Body DefaultMachine feedback);
-
+    @POST()
+    Call<User> updateUser(@Url String url, @Body UserPost userPost);
 }

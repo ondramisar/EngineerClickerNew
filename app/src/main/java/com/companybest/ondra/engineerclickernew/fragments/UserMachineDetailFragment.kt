@@ -54,14 +54,14 @@ class UserMachineDetailFragment : Fragment() {
             view.user_machine_detail_name.text = mach.name
             view.user_machine_detail_time.text = "time: " + mach.timeToReach.toString()
             val mat = realm.where(DefaultMaterial::class.java).equalTo("id", mach.idMaterialToGive).findFirst()
-            view.user_machine_detail_materials.text = "MATERIAL: " + (mat?.name ?: "none")
+            view.user_machine_detail_materials.text = "DEFAULT_MATERIAL: " + (mat?.name ?: "none")
             if (mach.worker != null)
                 view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
 
             view.user_machine_add_worker.setOnClickListener({
                 val dialog = Dialog(context)
                 dialog.setContentView(R.layout.machine_worker_dialog)
-                dialog.setTitle("WORKERS")
+                dialog.setTitle("DEFAULT_WORKERS")
                 val mAuth = FirebaseAuth.getInstance()
                 val userFire = mAuth.currentUser
                 val user = realm.where(User::class.java).equalTo("idUser", userFire?.uid).findFirst()

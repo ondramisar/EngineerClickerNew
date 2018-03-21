@@ -12,7 +12,7 @@ open class UserMachine : RealmObject() {
     var idMaterialToGive: String = ""
     var numberOfMaterialsToGive: Int = 0
     var lvl: Int = 0
-    var worker: DefaultWorker? = null
+    var worker: UserWorker? = null
     var workerId: String = ""
-    var userId: String = ""
+    var idUser: String = ""
 }

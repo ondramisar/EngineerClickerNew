@@ -53,7 +53,7 @@ class MainContainerActivity : BasicAdrClass() {
     override fun onStop() {
         super.onStop()
         val net = NetworkClient()
-        net.setTimeOutOfAppForUser(System.currentTimeMillis())
+     //   net.setTimeOutOfAppForUser(System.currentTimeMillis())
     }
 
     override fun onResume() {

@@ -19,7 +19,7 @@ class WorkersViewHolder(itemView: View) : GenericViewHolder(itemView) {
         itemView.worker_name.text = worker.name
         itemView.worker_pay.text = "DAY PAYMENT" + worker.payment.toString()
         itemView.worker_time.text = "TIME SHORTEN BY: " + worker.timeCutBy.toString() + " %"
-        itemView.worker_material.text = "MATERIAL MULTIPLY BY: " + worker.materialMultiplayer.toString()
+        itemView.worker_material.text = "DEFAULT_MATERIAL MULTIPLY BY: " + worker.materialMultiplayer.toString()
     /*    if (worker.isBought){
             itemView.worker_buy.text = "WORKER IS ALREADY EMPLOYED"
         }else {*/

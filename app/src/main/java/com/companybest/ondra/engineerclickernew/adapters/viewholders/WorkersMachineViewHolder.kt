@@ -15,7 +15,7 @@ class WorkersMachineViewHolder(itemView: View, val callback: OnClick) : GenericV
         itemView.worker_machine_name.text = worker.name
         itemView.worker_machine_pay.text = "DAY PAYMENT" + worker.payment.toString()
         itemView.worker_machine_time.text = "TIME SHORTEN BY: " + worker.timeCutBy.toString() + " %"
-        itemView.worker_machine_material.text = "MATERIAL MULTIPLY BY: " + worker.materialMultiplayer.toString()
+        itemView.worker_machine_material.text = "DEFAULT_MATERIAL MULTIPLY BY: " + worker.materialMultiplayer.toString()
         if (worker.isOnMachine) {
             itemView.worker_machine_add.text = "ALREADY WORKING"
         } else {

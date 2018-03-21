@@ -45,10 +45,12 @@ dependencies {
     implementation project(path: ':adron')
 
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.9.0'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.9.0'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.0'
+    implementation group: 'com.squareup.retrofit2', name: 'converter-jackson', version: '2.3.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.0'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.9.0'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.2'
 }
 repositories {
     mavenCentral()
