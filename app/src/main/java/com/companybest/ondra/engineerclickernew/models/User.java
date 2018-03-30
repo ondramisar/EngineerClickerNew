@@ -1,6 +1,7 @@
 package com.companybest.ondra.engineerclickernew.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -9,13 +10,27 @@ import io.realm.annotations.PrimaryKey;
 
 public class User extends RealmObject {
     @PrimaryKey
+    @JsonProperty("IdUser")
     private String idUser;
+
+    @JsonProperty("name")
     private String name;
+
+    @JsonProperty("Email")
     private String email;
+
+    @JsonProperty("Coins")
     private int coins;
+
+    @JsonProperty("LastUpdateMaterial")
     private Long lastUpdateMaterial;
+
+    @JsonProperty("LastTimeOutOfApp")
     private Long lastTimeOutOfApp;
+
+    @JsonProperty("LastPayment")
     private Long lastPayment;
+
     @JsonIgnore
     private RealmList<UserMachine> mUserMachines;
     @JsonIgnore

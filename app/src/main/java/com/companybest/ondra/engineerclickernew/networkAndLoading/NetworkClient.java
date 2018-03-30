@@ -68,6 +68,7 @@ public class NetworkClient {
     private void initializeNetworkClient() throws Exception {
 
         mApiUrl = "https://fluffy-fox-project.appspot.com/";
+        //mApiUrl = "http://localhost:8080/";
 
         if (initializeApiReference())
             throw new Exception("Api initialization error");
@@ -186,12 +187,7 @@ public class NetworkClient {
 
             final UserMachine mechTest = it.where(UserMachine.class).equalTo("id", mach.getId()).findFirst();
             if (mechTest != null) {
-                it.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        user.addMachine(mechTest);
-                    }
-                });
+                it.executeTransaction(realm -> user.addMachine(mechTest));
 
             }
 
@@ -270,7 +266,6 @@ public class NetworkClient {
             if (userFir != null) {
                 User user = realm.where(User.class).equalTo("idUser", userFir.getUid()).findFirst();
                 if (user != null) {
-                    //TODO doestn work because sending blank json
                     Response<User> userResponce = mApi.updateUser("updateUser/" + userFir.getUid(),
                             new UserPost(user.getIdUser(), user.getName(), user.getEmail(), user.getCoins(),
                                     user.getLastUpdateMaterial(), user.getLastTimeOutOfApp(), user.getLastPayment())).execute();
@@ -283,13 +278,20 @@ public class NetworkClient {
         }
     }
 
-    public void createUser(FirebaseUser user) {
+    public void createUser(FirebaseUser user, Runnable runnable) {
         try (Realm realm = Realm.getDefaultInstance()) {
             realm.executeTransaction(realm1 -> realm.delete(User.class));
             mApi.postUser(new UserPost(user.getUid(), "", user.getEmail(), 0, 0L, 0L, 0L)).enqueue(new ApiCallback<String>() {
                 @Override
                 public void onSuccess(Call<String> call, Response<String> response) {
                     Log.i("usern", response.body());
+                    runnable.run();
+                }
+
+                @Override
+                public void onFailure(Call<String> call, Throwable t) {
+                    super.onFailure(call, t);
+                    Log.i("usern", t.getMessage());
                 }
             });
         }

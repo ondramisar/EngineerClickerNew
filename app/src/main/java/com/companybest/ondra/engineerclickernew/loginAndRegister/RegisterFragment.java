@@ -141,9 +141,13 @@ public class RegisterFragment extends Fragment {
                                                     });*/
                                             try {
                                                 NetworkClient networkClient = new NetworkClient();
-                                                networkClient.createUser(user);
-                                                Intent i = new Intent(getContext(), LoadingActivity.class);
-                                                startActivity(i);
+                                                networkClient.createUser(user, new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Intent i = new Intent(getContext(), LoadingActivity.class);
+                                                        startActivity(i);
+                                                    }
+                                                });
                                             } catch (Exception e) {
                                                 e.printStackTrace();
                                             }

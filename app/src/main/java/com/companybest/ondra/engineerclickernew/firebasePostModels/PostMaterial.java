@@ -1,10 +1,9 @@
 package com.companybest.ondra.engineerclickernew.firebasePostModels;
 
 
-
 public class PostMaterial extends Object {
-    private String id;
-        private int numberOf;
+    public String id;
+    public int numberOf;
 
     public PostMaterial() {
     }
