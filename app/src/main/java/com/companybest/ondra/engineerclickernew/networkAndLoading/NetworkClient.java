@@ -4,6 +4,7 @@ package com.companybest.ondra.engineerclickernew.networkAndLoading;
 import android.util.Log;
 
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMachine;
+import com.companybest.ondra.engineerclickernew.firebasePostModels.PostWorker;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.UserPost;
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine;
 import com.companybest.ondra.engineerclickernew.models.DefaultMaterial;
@@ -201,44 +202,41 @@ public class NetworkClient {
     }
 
     public void addWorker(final DefaultWorker defaultWorker, final User user) {
-   /*     getUserDocumentReferenc()
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document != null) {
-                                ArrayList<String> oldData = (ArrayList<String>) document.getData().get("idWorkers");
-                                ArrayList<String> newData = new ArrayList<>();
-                                if (oldData != null)
-                                    newData.addAll(oldData);
-                                if (!defaultWorker.getId().isEmpty()) {
-                                    newData.add(defaultWorker.getId());
-                                    try (Realm realm = Realm.getDefaultInstance()) {
-                                        realm.executeTransaction(new Realm.Transaction() {
-                                            @Override
-                                            public void execute(Realm realm) {
-                                                user.addWorker(defaultWorker);
-                                                defaultWorker.setBought(true);
-                                            }
-                                        });
-                                    }
+        try (Realm it = Realm.getDefaultInstance()) {
+            UserWorker userWorker = new UserWorker();
+            userWorker.setId(UUID.randomUUID().toString());
+            userWorker.setIdUser(user.getIdUser());
+            userWorker.setLvl(1);
+            userWorker.setMaterialMultiplayer(defaultWorker.getMaterialMultiplayer());
+            userWorker.setName(defaultWorker.getName());
+            userWorker.setOnMachine(false);
+            userWorker.setTimeCutBy(defaultWorker.getTimeCutBy());
+            userWorker.setPayment(defaultWorker.getPayment());
 
-                                    getUserDocumentReferenc()
-                                            .update("idWorkers", newData);
-                                }
-                            }
-                        }
-                    }
-                });*/
+            it.beginTransaction();
+            it.copyToRealmOrUpdate(userWorker);
+            it.commitTransaction();
+
+            final UserWorker workerTest = it.where(UserWorker.class).equalTo("id", userWorker.getId()).findFirst();
+            if (workerTest != null) {
+                it.executeTransaction(realm -> user.addWorker(workerTest));
+
+            }
+
+            Response<String> machineResponce = mApi.createUserWorker(new PostWorker(userWorker.getId(), userWorker.getName(), userWorker.getTimeCutBy(), userWorker.getMaterialMultiplayer(),
+                    userWorker.getPayment(), userWorker.getLvl(), userWorker.isOnMachine(), userWorker.getIdUser())).execute();
+            Log.i("usern", machineResponce.body());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void addWorkerToMachine(UserMachine userMachine, DefaultWorker defaultWorker) {
     /*    WriteBatch batch = getBaseRef().batch();
         DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
                 .document(userMachine.getId());
-        batch.update(sfRef, "workerId", defaultWorker.getId());
+        batch.update(sfRef, "isOnMachine", defaultWorker.getId());
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
@@ -251,7 +249,7 @@ public class NetworkClient {
    /*     WriteBatch batch = getBaseRef().batch();
         DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
                 .document(userMachine.getId());
-        batch.update(sfRef, "workerId", null);
+        batch.update(sfRef, "isOnMachine", null);
         batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {

@@ -20,17 +20,14 @@ class WorkersViewHolder(itemView: View) : GenericViewHolder(itemView) {
         itemView.worker_pay.text = "DAY PAYMENT" + worker.payment.toString()
         itemView.worker_time.text = "TIME SHORTEN BY: " + worker.timeCutBy.toString() + " %"
         itemView.worker_material.text = "DEFAULT_MATERIAL MULTIPLY BY: " + worker.materialMultiplayer.toString()
-    /*    if (worker.isBought){
-            itemView.worker_buy.text = "WORKER IS ALREADY EMPLOYED"
-        }else {*/
-            itemView.worker_buy.setOnClickListener({
-                val network = NetworkClient()
-                val mAuth = FirebaseAuth.getInstance()
-                val userFire = mAuth.currentUser
-                val user = Realm.getDefaultInstance().where(User::class.java).equalTo("idUser", userFire?.uid).findFirst()
-                network.addWorker(worker, user)
-                Log.i("usern", "worker added")
-            })
-      //  }
+
+        itemView.worker_buy.setOnClickListener({
+            val network = NetworkClient()
+            val mAuth = FirebaseAuth.getInstance()
+            val userFire = mAuth.currentUser
+            val user = Realm.getDefaultInstance().where(User::class.java).equalTo("idUser", userFire?.uid).findFirst()
+            network.addWorker(worker, user)
+            Log.i("usern", "worker added")
+        })
     }
 }

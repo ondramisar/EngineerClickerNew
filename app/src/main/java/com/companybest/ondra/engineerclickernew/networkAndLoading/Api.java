@@ -1,6 +1,7 @@
 package com.companybest.ondra.engineerclickernew.networkAndLoading;
 
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMachine;
+import com.companybest.ondra.engineerclickernew.firebasePostModels.PostWorker;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.UserPost;
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine;
 import com.companybest.ondra.engineerclickernew.models.DefaultMaterial;
@@ -34,6 +35,9 @@ public interface Api {
 
     @GET
     Call<List<UserWorker>> getUserWorkers(@Url String url);
+
+    @POST("createWorker")
+    Call<String> createUserWorker(@Body PostWorker machine);
 
     @GET("defaultMaterials")
     Call<List<DefaultMaterial>> getDefaultMaterials();

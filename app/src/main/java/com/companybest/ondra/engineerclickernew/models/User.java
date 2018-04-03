@@ -13,7 +13,7 @@ public class User extends RealmObject {
     @JsonProperty("IdUser")
     private String idUser;
 
-    @JsonProperty("name")
+    @JsonProperty("Name")
     private String name;
 
     @JsonProperty("Email")
