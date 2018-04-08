@@ -73,11 +73,7 @@ class UserMachineDetailFragment : Fragment() {
                             val worker = it
                             view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
                             val network = NetworkClient()
-                           /* network.addWorkerToMachine(mach, worker )
-                            realm.executeTransaction({
-                                mach.worker = worker
-                                worker.isOnMachine = true
-                            })*/
+                            network.addWorkerToMachine(mach.id, worker.id)
                             dialog.dismiss()
                         }
                     }, "worker")
@@ -97,7 +93,7 @@ class UserMachineDetailFragment : Fragment() {
             view.user_machine_remove.setOnClickListener({
                 view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#dddddd"))
                 val network = NetworkClient()
-                network.removeWorkerToMachine(mach)
+                network.removeWorkerToMachine(mach.id)
                 realm.executeTransaction({
                   //  mach.worker?.isOnMachine = false
                     mach.worker = null

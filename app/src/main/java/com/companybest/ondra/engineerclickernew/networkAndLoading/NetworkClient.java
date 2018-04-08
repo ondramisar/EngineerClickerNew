@@ -232,30 +232,37 @@ public class NetworkClient {
         }
     }
 
-    public void addWorkerToMachine(UserMachine userMachine, DefaultWorker defaultWorker) {
-    /*    WriteBatch batch = getBaseRef().batch();
-        DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
-                .document(userMachine.getId());
-        batch.update(sfRef, "isOnMachine", defaultWorker.getId());
-        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.i("usern", "Updated UserMachine");
-            }
-        });*/
+    public void addWorkerToMachine(String idMachine, String idWorker) {
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> {
+                UserWorker userWorker = realm1.where(UserWorker.class).equalTo("id", idWorker).findFirst();
+                UserMachine userMachine = realm1.where(UserMachine.class).equalTo("id", idMachine).findFirst();
+                if (userMachine != null && userWorker != null) {
+                    userMachine.setWorkerId(idWorker);
+                    userMachine.setWorker(userWorker);
+                }
+            });
+            Response<String> response = mApi.addWorkerToMachine("addWorker/" + idMachine + "/" + idWorker).execute();
+            Log.i("usern", response.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void removeWorkerToMachine(UserMachine userMachine) {
-   /*     WriteBatch batch = getBaseRef().batch();
-        DocumentReference sfRef = QueryFirebaseUtilitiesKt.getBaseRef().collection(QueryFirebaseUtilitiesKt.getUsersMachinePath())
-                .document(userMachine.getId());
-        batch.update(sfRef, "isOnMachine", null);
-        batch.commit().addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                Log.i("usern", "Updated UserMachine");
-            }
-        });*/
+    public void removeWorkerToMachine(String idMachine) {
+        try (Realm realm = Realm.getDefaultInstance()) {
+            realm.executeTransaction(realm1 -> {
+                UserMachine userMachine = realm1.where(UserMachine.class).equalTo("id", idMachine).findFirst();
+                if (userMachine != null) {
+                    userMachine.setWorkerId("");
+                    userMachine.setWorker(null);
+                }
+            });
+            Response<String> response = mApi.removeWorkerFromMachine("removeWorker/" + idMachine).execute();
+            Log.i("usern", response.body());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateUser() {

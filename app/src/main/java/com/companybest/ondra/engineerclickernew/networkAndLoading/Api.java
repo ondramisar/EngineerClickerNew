@@ -30,6 +30,12 @@ public interface Api {
     @POST("createMachine")
     Call<String> createUserMachines(@Body PostMachine machine);
 
+    @POST
+    Call<String> addWorkerToMachine(@Url String url);
+
+    @POST
+    Call<String> removeWorkerFromMachine(@Url String url);
+
     @GET("defaultWorkers")
     Call<List<DefaultWorker>> getDefaultWorkers();
 

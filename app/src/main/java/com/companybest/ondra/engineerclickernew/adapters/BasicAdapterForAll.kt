@@ -7,9 +7,9 @@ import com.companybest.ondra.engineerclickernew.R
 import com.companybest.ondra.engineerclickernew.adapters.viewholders.*
 import com.companybest.ondra.engineerclickernew.adapters.viewholders.generic.GenericViewHolder
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine
-import com.companybest.ondra.engineerclickernew.models.UserMachine
 import com.companybest.ondra.engineerclickernew.models.DefaultMaterial
-import com.companybest.ondra.engineerclickernew.models.DefaultWorker
+import com.companybest.ondra.engineerclickernew.models.UserMachine
+import com.companybest.ondra.engineerclickernew.models.UserWorker
 import com.companybest.ondra.engineerclickernew.utilities.OnClick
 import io.realm.RealmList
 import io.realm.RealmModel
@@ -60,9 +60,9 @@ class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<Gen
         return when {
             mData?.get(position) is UserMachine -> MACHINE_TYPE
             mData?.get(position) is DefaultMachine -> DEFAULT_MACHINE_TYPE
-            mData?.get(position) is DefaultWorker -> WORKERS_TYPE
+            mData?.get(position) is UserWorker -> WORKERS_TYPE
             mData?.get(position) is DefaultMaterial -> MARKET_TYPE
-            else -> 0
+            else -> 5
         }
     }
 
