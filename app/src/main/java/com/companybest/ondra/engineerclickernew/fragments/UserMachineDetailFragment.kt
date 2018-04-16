@@ -76,7 +76,7 @@ class UserMachineDetailFragment : Fragment() {
                             network.addWorkerToMachine(mach.id, worker.id)
                             dialog.dismiss()
                         }
-                    }, "worker")
+                    })
                     val linearManaget = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                     dialog.machine_workers_choice.adapter = adapter
                     dialog.machine_workers_choice.layoutManager = linearManaget

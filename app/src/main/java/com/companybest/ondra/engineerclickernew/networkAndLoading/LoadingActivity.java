@@ -24,32 +24,33 @@ public class LoadingActivity extends AppCompatActivity {
 
         try {
             NetworkClient networkClient = new NetworkClient();
+            networkClient.componentsRunning.add(NetworkClient.DEFAULT_MACHINE);
+            networkClient.componentsRunning.add(NetworkClient.DEFAULT_MATERIAL);
+            networkClient.componentsRunning.add(NetworkClient.DEFAULT_WORKERS);
+            networkClient.componentsRunning.add(NetworkClient.USER);
+            networkClient.componentsRunning.add(NetworkClient.USER_WORKERS);
+            networkClient.componentsRunning.add(NetworkClient.USERS_MACHINE);
+            networkClient.componentsRunning.add(NetworkClient.USER_MATERIAL);
 
-            networkClient.mCallBack.put(NetworkClient.COMPONENTS, key -> {
-                keys.add(key);
-
-                if (keys.size() == 7) {
-                    networkClient.compose();
-                }
-            });
-
-            networkClient.mCallBack.put(NetworkClient.COMPOSERS, key -> {
-                components.add(key);
-
-                if (components.size() == 4) {
-                    networkClient.update();
-                }
-            });
+            networkClient.composersRunning.add(NetworkClient.Composers.MACHINE_WORKER);
+            networkClient.composersRunning.add(NetworkClient.Composers.USER_MACHINE);
+            networkClient.composersRunning.add(NetworkClient.Composers.USER_MATERIAL);
+            networkClient.composersRunning.add(NetworkClient.Composers.USER_WORKER);
 
 
-            networkClient.mCallBack.put(NetworkClient.UPDATE, key -> {
+
+            networkClient.mCallBack.put(NetworkClient.COMPONENTS, networkClient::compose);
+
+            networkClient.mCallBack.put(NetworkClient.COMPOSERS, () -> {
                 Intent i = new Intent(getApplicationContext(), MainContainerActivity.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(i);
 
             });
-            networkClient.parseAllComponents();
 
+            networkClient.mCallBack.put(NetworkClient.UPDATE, networkClient::parseAllComponents);
+
+            networkClient.update();
         } catch (Exception e) {
             e.printStackTrace();
         }

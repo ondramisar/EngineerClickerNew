@@ -70,64 +70,8 @@ public class LoginFragment extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
                                     Log.d("usern", "createUserWithEmail:success");
                                     final FirebaseUser user = mAuth.getCurrentUser();
-
-/*
-                                    final Realm realm = Realm.getDefaultInstance();
-                                    DatabaseReference users = databaseReference.child("users");
-                                    users.addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            if (dataSnapshot.child(user.getUid()).exists()) {
-                                                DataSnapshot userSnap = dataSnapshot.child(user.getUid());
-                                                User userRealm = new User();
-                                                userRealm.setIdUser(userSnap.getKey());
-                                                if (userSnap.child("username").exists())
-                                                    userRealm.setName((String) userSnap.child("username").getValue());
-                                                if (userSnap.child("email").exists())
-                                                    userRealm.setEmail((String) userSnap.child("email").getValue());
-                                                if (userSnap.child("email").exists())
-
-                                                realm.beginTransaction();
-                                                realm.delete(User.class);
-                                                realm.copyToRealmOrUpdate(userRealm);
-                                                realm.commitTransaction();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
-
-                                    final User queryUser = realm.where(User.class).equalTo("idUser", user.getUid()).findFirst();
-                                    if (queryUser == null) {
-                                        User userRealm = new User();
-                                        userRealm.setIdUser(user.getUid());
-                                        userRealm.setName(user.getDisplayName());
-                                        userRealm.setEmail(user.getEmail());
-                                        realm.beginTransaction();
-                                        realm.delete(User.class);
-                                        realm.copyToRealmOrUpdate(userRealm);
-                                        realm.commitTransaction();
-
-                                        users.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                if (!dataSnapshot.child(user.getUid()).exists()) {
-                                                    databaseReference.child("users").child(user.getUid()).setValue(new UserPost(queryUser.getIdUser(), queryUser.getName(), queryUser.getEmail()));
-                                                }
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
-                                    }*/
                                     Intent i = new Intent(getContext(), LoadingActivity.class);
                                     startActivity(i);
                                 } else {

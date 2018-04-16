@@ -59,4 +59,10 @@ public interface Api {
 
     @POST()
     Call<User> updateUser(@Url String url, @Body UserPost userPost);
+
+    @POST()
+    Call<String> timeOutOfApp(@Url String url);
+
+    @POST()
+    Call<String> updateBackground(@Url String url);
 }
