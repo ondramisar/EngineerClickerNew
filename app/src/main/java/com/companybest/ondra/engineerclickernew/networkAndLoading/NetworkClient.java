@@ -4,6 +4,7 @@ package com.companybest.ondra.engineerclickernew.networkAndLoading;
 import android.util.Log;
 
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMachine;
+import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMaterial;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostWorker;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.UserPost;
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine;
@@ -137,7 +138,7 @@ public class NetworkClient {
     }
 
     public void updateMachineWork() {
-    /*    try (Realm realm = Realm.getDefaultInstance()) {
+    /*   try (Realm realm = Realm.getDefaultInstance()) {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser userFire = mAuth.getCurrentUser();
             if (userFire != null) {
@@ -175,23 +176,41 @@ public class NetworkClient {
             mach.setId(UUID.randomUUID().toString());
             mach.setName(machDef.getName());
             mach.setTimeToReach(machDef.getTimeToReach());
-            mach.setIdMaterialToGive(machDef.getIdMaterialToGive());
             mach.setLvl(1);
             mach.setNumberOfMaterialsToGive(machDef.getNumberOfMaterialsToGive());
             mach.setIdUser(user.getIdUser());
+
+            DefaultMaterial defaultMaterial = it.where(DefaultMaterial.class).equalTo("id", machDef.getIdMaterialToGive()).findFirst();
+            UserMaterial userMaterial = new UserMaterial();
+            userMaterial.setId(UUID.randomUUID().toString());
+            if (defaultMaterial != null) {
+                userMaterial.setName(defaultMaterial.getName());
+                userMaterial.setNumberOf(0);
+                userMaterial.setValue(defaultMaterial.getValue());
+                userMaterial.setIdUser(user.getIdUser());
+            }
+
+            mach.setIdMaterialToGive(userMaterial.getId());
+
             it.beginTransaction();
             it.copyToRealmOrUpdate(mach);
+            it.copyToRealmOrUpdate(userMaterial);
             it.commitTransaction();
 
             final UserMachine mechTest = it.where(UserMachine.class).equalTo("id", mach.getId()).findFirst();
+            UserMaterial userMaterialQuery = it.where(UserMaterial.class).equalTo("id", userMaterial.getId()).findFirst();
             if (mechTest != null) {
                 it.executeTransaction(realm -> user.addMachine(mechTest));
-
+                it.executeTransaction(realm -> user.addMaterial(userMaterialQuery));
             }
 
             Response<String> machineResponce = mApi.createUserMachines(new PostMachine(mach.getId(), mach.getName(), mach.getTimeToReach(), mach.getNumberOfMaterialsToGive(),
                     mach.getIdMaterialToGive(), mach.getLvl(), mach.getWorkerId(), mach.getIdUser())).execute();
             Log.i("usern", machineResponce.body());
+
+            Response<String> materialResponce = mApi.createUserMaterial(new PostMaterial(userMaterial.getId(), userMaterial.getName(), userMaterial.getValue(),
+                    userMaterial.getNumberOf(), userMaterial.getIdUser())).execute();
+            Log.i("usern", materialResponce.body());
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -261,7 +280,7 @@ public class NetworkClient {
         }
     }
 
-    public void timeOutOfApp(){
+    public void timeOutOfApp() {
         try (Realm realm = Realm.getDefaultInstance()) {
             FirebaseUser userFir = FirebaseAuth.getInstance().getCurrentUser();
             if (userFir != null) {

@@ -2,30 +2,17 @@ package com.companybest.ondra.engineerclickernew.firebasePostModels;
 
 
 public class PostMaterial extends Object {
-    public String id;
+    public String iD;
+    public String name;
+    public int value;
     public int numberOf;
+    public String idUser;
 
-    public PostMaterial() {
-    }
-
-    public PostMaterial(String id, int numberOf) {
-        this.id = id;
-        this.numberOf = numberOf;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public int getNumberOf() {
-        return numberOf;
-    }
-
-    public void setNumberOf(int numberOf) {
+    public PostMaterial(String id, String name, int value, int numberOf, String userId) {
+        this.iD = id;
+        this.name = name;
+        this.value = value;
+        this.idUser = userId;
         this.numberOf = numberOf;
     }
 }
