@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMachine;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMaterial;
+import com.companybest.ondra.engineerclickernew.firebasePostModels.PostUserMaterial;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostWorker;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.UserPost;
 import com.companybest.ondra.engineerclickernew.models.DefaultMachine;
@@ -29,6 +30,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -138,7 +140,7 @@ public class NetworkClient {
     }
 
     public void updateMachineWork() {
-    /*   try (Realm realm = Realm.getDefaultInstance()) {
+        try (Realm realm = Realm.getDefaultInstance()) {
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             FirebaseUser userFire = mAuth.getCurrentUser();
             if (userFire != null) {
@@ -153,11 +155,19 @@ public class NetworkClient {
                                 } else {
                                     Long cur = System.currentTimeMillis() / 1000;
                                     if ((cur - machine.getTimeBeffore()) > (machine.getTimeToReach() - ((machine.getWorker().getTimeCutBy() / 100) * machine.getTimeToReach()))) {
-                                        realm.executeTransaction(new Realm.Transaction() {
-                                            @Override
-                                            public void execute(Realm realm) {
-                                                machine.setTimeBeffore(System.currentTimeMillis() / 1000);
-                                                UserMaterial mat = realm.where(UserMaterial.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
+                                        realm.executeTransaction(realm12 -> {
+                                            machine.setTimeBeffore(System.currentTimeMillis() / 1000);
+                                            UserMaterial mat = realm12.where(UserMaterial.class).equalTo("id", machine.getIdMaterialToGive()).findFirst();
+                                            if (mat != null) {
+                                                mat.setNumberOf(mat.getNumberOf() + (machine.getNumberOfMaterialsToGive() * machine.getWorker().getMaterialMultiplayer()));
+
+                                                try {
+                                                    NetworkClient networkClient = new NetworkClient();
+                                                    Call<String> res = networkClient.mApi.updateUserMaterialNumberOf("updateMaterialNumberOf/" + mat.getId(), new PostUserMaterial(mat.getId(), mat.getName(), mat.getValue(), mat.getNumberOf(), mat.getIdUser()));
+                                                    Log.i("usern", res.execute().body());
+                                                } catch (Exception e) {
+                                                    e.printStackTrace();
+                                                }
                                             }
                                         });
                                     }
@@ -167,7 +177,7 @@ public class NetworkClient {
                     }
                 }
             }
-        }*/
+        }
     }
 
     public void addMachine(DefaultMachine machDef, final User user) {
