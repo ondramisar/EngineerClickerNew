@@ -4,7 +4,6 @@ package com.companybest.ondra.engineerclickernew.networkAndLoading;
 import android.util.Log;
 
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMachine;
-import com.companybest.ondra.engineerclickernew.firebasePostModels.PostMaterial;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostUserMaterial;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.PostWorker;
 import com.companybest.ondra.engineerclickernew.firebasePostModels.UserPost;
@@ -163,7 +162,9 @@ public class NetworkClient {
 
                                                 try {
                                                     NetworkClient networkClient = new NetworkClient();
-                                                    Call<String> res = networkClient.mApi.updateUserMaterialNumberOf("updateMaterialNumberOf/" + mat.getId(), new PostUserMaterial(mat.getId(), mat.getName(), mat.getValue(), mat.getNumberOf(), mat.getIdUser()));
+                                                    Call<String> res = networkClient.mApi.updateUserMaterialNumberOf("updateMaterialNumberOf/" + mat.getId(),
+                                                            new PostUserMaterial(mat.getId(), mat.getName(), mat.getValue(),
+                                                                    mat.getNumberOf(), mat.getDefaultMaterialId(), mat.getIdUser()));
                                                     Log.i("usern", res.execute().body());
                                                 } catch (Exception e) {
                                                     e.printStackTrace();
@@ -190,16 +191,19 @@ public class NetworkClient {
             mach.setNumberOfMaterialsToGive(machDef.getNumberOfMaterialsToGive());
             mach.setIdUser(user.getIdUser());
 
-            DefaultMaterial defaultMaterial = it.where(DefaultMaterial.class).equalTo("id", machDef.getIdMaterialToGive()).findFirst();
-            UserMaterial userMaterial = new UserMaterial();
-            userMaterial.setId(UUID.randomUUID().toString());
-            if (defaultMaterial != null) {
-                userMaterial.setName(defaultMaterial.getName());
-                userMaterial.setNumberOf(0);
-                userMaterial.setValue(defaultMaterial.getValue());
-                userMaterial.setIdUser(user.getIdUser());
+            UserMaterial userMaterial = it.where(UserMaterial.class).equalTo("defaultMaterialId", machDef.getIdMaterialToGive()).findFirst();
+            if (userMaterial == null) {
+                DefaultMaterial defaultMaterial = it.where(DefaultMaterial.class).equalTo("id", machDef.getIdMaterialToGive()).findFirst();
+                userMaterial = new UserMaterial();
+                userMaterial.setId(UUID.randomUUID().toString());
+                if (defaultMaterial != null) {
+                    userMaterial.setName(defaultMaterial.getName());
+                    userMaterial.setNumberOf(0);
+                    userMaterial.setValue(defaultMaterial.getValue());
+                    userMaterial.setDefaultMaterialId(defaultMaterial.getId());
+                    userMaterial.setIdUser(user.getIdUser());
+                }
             }
-
             mach.setIdMaterialToGive(userMaterial.getId());
 
             it.beginTransaction();
@@ -218,8 +222,8 @@ public class NetworkClient {
                     mach.getIdMaterialToGive(), mach.getLvl(), mach.getWorkerId(), mach.getIdUser())).execute();
             Log.i("usern", machineResponce.body());
 
-            Response<String> materialResponce = mApi.createUserMaterial(new PostMaterial(userMaterial.getId(), userMaterial.getName(), userMaterial.getValue(),
-                    userMaterial.getNumberOf(), userMaterial.getIdUser())).execute();
+            Response<String> materialResponce = mApi.createUserMaterial(new PostUserMaterial(userMaterial.getId(), userMaterial.getName(), userMaterial.getValue(),
+                    userMaterial.getNumberOf(),userMaterial.getDefaultMaterialId(), userMaterial.getIdUser())).execute();
             Log.i("usern", materialResponce.body());
 
         } catch (IOException e) {

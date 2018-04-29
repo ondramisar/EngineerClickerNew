@@ -19,6 +19,9 @@ open class UserMaterial : RealmObject() {
     @JsonProperty("Name")
     var name: String = ""
 
+    @JsonProperty("DefaultMaterialId")
+    var defaultMaterialId: String = ""
+
     @JsonProperty("IdUser")
     var idUser: String = ""
 }
