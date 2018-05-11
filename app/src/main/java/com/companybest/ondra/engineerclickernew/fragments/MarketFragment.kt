@@ -45,13 +45,13 @@ class MarketFragment : Fragment() {
             val linearManaget = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             view.market_materials.adapter = adapter
             view.market_materials.layoutManager = linearManaget
-            view.refresh.setOnClickListener({
+           /* view.refresh.setOnClickListener({
                 val user = realm.where(User::class.java).equalTo("idUser", userFire?.uid).findFirst()
                 dataRealm.clear()
                 dataRealm.addAll(user?.materials!!)
                 val adapter = BasicAdapterForAll(dataRealm)
                 view.market_materials.adapter = adapter
-            })
+            })*/
         }
         return view
     }

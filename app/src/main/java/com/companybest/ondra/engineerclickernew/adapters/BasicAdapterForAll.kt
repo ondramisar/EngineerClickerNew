@@ -54,7 +54,7 @@ class BasicAdapterForAll(data: RealmList<RealmModel>) : RecyclerView.Adapter<Gen
             mData?.get(position) is UserMachine -> MACHINE_TYPE
             mData?.get(position) is DefaultMachine -> DEFAULT_MACHINE_TYPE
             mData?.get(position) is UserWorker -> USER_WORKERS_TYPE
-            mData?.get(position) is DefaultMaterial -> MARKET_TYPE
+            mData?.get(position) is UserMaterial -> MARKET_TYPE
             mData?.get(position) is DefaultWorker -> DEFAULT_WORKERS_TYPE
             else -> 5
         }

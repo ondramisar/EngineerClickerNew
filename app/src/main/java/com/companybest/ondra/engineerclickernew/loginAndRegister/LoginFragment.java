@@ -3,7 +3,6 @@ package com.companybest.ondra.engineerclickernew.loginAndRegister;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
@@ -14,11 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.companybest.ondra.engineerclickernew.networkAndLoading.LoadingActivity;
 import com.companybest.ondra.engineerclickernew.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
+import com.companybest.ondra.engineerclickernew.networkAndLoading.LoadingActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -66,18 +62,15 @@ public class LoginFragment extends Fragment {
 
                 final FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 mAuth.signInWithEmailAndPassword(emailString, passString)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    Log.d("usern", "createUserWithEmail:success");
-                                    final FirebaseUser user = mAuth.getCurrentUser();
-                                    Intent i = new Intent(getContext(), LoadingActivity.class);
-                                    startActivity(i);
-                                } else {
-                                }
-
+                        .addOnCompleteListener(getActivity(), task -> {
+                            if (task.isSuccessful()) {
+                                Log.d("usern", "createUserWithEmail:success");
+                                final FirebaseUser user = mAuth.getCurrentUser();
+                                Intent i = new Intent(getContext(), LoadingActivity.class);
+                                startActivity(i);
+                            } else {
                             }
+
                         });
             }
         });

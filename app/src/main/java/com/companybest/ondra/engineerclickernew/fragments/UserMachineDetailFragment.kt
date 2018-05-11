@@ -68,13 +68,15 @@ class UserMachineDetailFragment : Fragment() {
                 if (user !=null) {
                     val workers = RealmList<RealmModel>()
                     workers.addAll(user.userWorkers)
-                    val adapter = BasicAdapterForAll(workers, OnClick {
-                        if (it is UserWorker) {
-                            val worker = it
-                            view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
-                            val network = NetworkClient()
-                            network.addWorkerToMachine(mach.id, worker.id)
-                            dialog.dismiss()
+                    val adapter = BasicAdapterForAll(workers, object : OnClick {
+                        override fun onClick(realmModel: RealmModel) {
+                            if (realmModel is UserWorker) {
+                                val worker = realmModel 
+                                view.user_machine_worker_img.setBackgroundColor(Color.parseColor("#000000"))
+                                val network = NetworkClient()
+                                network.addWorkerToMachine(mach.id, worker.id)
+                                dialog.dismiss()
+                            }
                         }
                     })
                     val linearManaget = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
